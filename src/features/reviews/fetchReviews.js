@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 
 export const reviewsApi = createApi({
-  reducerPath: 'reviews',
+  reducerPath: 'fetchReviews',
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://api.balaan.co.kr',
     keepUnusedDataFor: 30,
