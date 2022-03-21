@@ -1,13 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useGetReviewsQuery } from '../service/reviews';
+import { useGetReviewsQuery } from '../features/reviews/fetchReviews';
 import Header from './common/Header';
 import Filter from './common/Filter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { addData, incrementPage } from '../features/reviews/reviews';
+import ReactLoading from 'react-loading';
 
 const ReviewListPage = () => {
-  const { data, error, isLoading, isSuccess, isError } = useGetReviewsQuery(1);
+  const [target, setTarget] = useState(null);
+  const page = useSelector((state) => state.reviews.page);
+  const reviews = useSelector((state) => state.reviews.data);
+  const dispatch = useDispatch();
+  const { data, error, isSuccess, isError, isFetching } = useGetReviewsQuery(page);
+  const [loading, setLoading] = useState(false);
+  const [debounceTimer, setDebounceTimer] = useState(0);
+  const onIntersect = async ([entry], observer) => {
+    if (entry.isIntersecting) {
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+      const newTimer = setTimeout(async () => {
+        try {
+          observer.unobserve(entry.target);
+          await dispatch(incrementPage());
+          observer.observe(entry.target);
+        } catch (e) {
+          console.error('error', e);
+        }
+      }, 800);
+      setDebounceTimer(newTimer);
+    }
+  };
+  useEffect(() => {
+    let observer;
+    if (target) {
+      observer = new IntersectionObserver(onIntersect, {
+        threshold: 0.4,
+      });
+      observer.observe(target);
+    }
+    return () => observer && observer.disconnect();
+  }, [target]);
+  useEffect(() => {
+    data && dispatch(addData(data.data));
+  }, [data]);
+  useEffect(() => {
+    if (isFetching) {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+    }
+  }, [isFetching]);
 
   return (
     <Wrap>
@@ -25,6 +72,11 @@ const ReviewListPage = () => {
           <FontAwesomeIcon icon={faArrowRotateRight} />
         </Refresh>
       </Tags>
+      {loading && (
+        <LoaderWrap>
+          <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />
+        </LoaderWrap>
+      )}
       <ViewContainer>
         <ViewChoice>
           <ChoiceButton selected={true}>
@@ -34,13 +86,12 @@ const ReviewListPage = () => {
             <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
           </ChoiceButton>
         </ViewChoice>
-        {data && (
-          <Grid>
-            {data.data.map((data) => (
-              <Img src={`https://i.balaan.io/review/${data.img[0]}`} alt="reviewImg" />
-            ))}
-          </Grid>
-        )}
+        <Grid>
+          {reviews.map((data) => (
+            <Img src={`https://i.balaan.io/review/${data.img[0]}`} alt="reviewImg" key={data.id} />
+          ))}
+        </Grid>
+        <div ref={setTarget} />
       </ViewContainer>
     </Wrap>
   );
@@ -49,6 +100,18 @@ const ReviewListPage = () => {
 export default ReviewListPage;
 
 const Wrap = styled.div``;
+
+const LoaderWrap = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  box-shadow: 2px 2px 20px 2px grey;
+  padding: 1.5rem;
+  border-radius: 20px;
+  z-index: 1;
+`;
 
 const Filters = styled.div`
   display: flex;
@@ -69,7 +132,7 @@ const Tags = styled.ul`
 const Tag = styled.li`
   padding: 10px 1rem;
   background-color: ${({ theme }) => theme.color.lightBlue};
-  border-radius: 20px;
+  border-radius: 3rem;
   color: ${({ theme }) => theme.color.blue};
   font-size: ${({ theme }) => theme.fontSize.xSmall};
   font-weight: 600;
