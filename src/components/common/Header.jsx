@@ -69,7 +69,7 @@ const Nav = styled.ul`
 
 const NavItem = styled.li`
   white-space: nowrap;
-  padding: 3px 0.8rem;
+  padding: 0 1.3rem 0.6rem;
   ${({ selected, theme }) =>
     selected &&
     css`
