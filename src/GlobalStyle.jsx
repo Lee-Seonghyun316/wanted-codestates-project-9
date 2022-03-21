@@ -26,6 +26,20 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block;
 }
+html {
+  @media all and (max-width: 320px) {
+    font-size: 3.13vmin;
+  }
+  @media ${({ theme }) => theme.device.mobile} {
+    font-size: 3.13vmin;
+  }
+  @media ${({ theme }) => theme.device.tablet} {
+    font-size: 15px;
+  }
+   @media ${({ theme }) => theme.device.laptop} {
+    font-size: 18px;
+  }
+}
 body {
   line-height: 1;
 }
@@ -43,6 +57,10 @@ q:before, q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+button {
+  border: none;
+  background: none;
 }
 `;
 

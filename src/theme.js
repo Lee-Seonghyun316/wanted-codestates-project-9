@@ -5,14 +5,14 @@ const deviceSizes = {
 };
 
 const device = {
-  mobile: `screen and (max-width: ${deviceSizes.mobile})`,
-  tablet: `screen and (max-width: ${deviceSizes.tablet})`,
-  laptop: `screen and (max-width: ${deviceSizes.laptop})`,
+  mobile: `all and (min-width:330px) and (max-width:${deviceSizes.mobile})`,
+  tablet: `all and (min-width:${deviceSizes.mobile}) and (max-width:${deviceSizes.tablet})`,
+  laptop: `all and (min-width:${deviceSizes.tablet})`,
 };
 
 const pixelToRem = (size) => `${size / 16}rem`;
 
-const fontSizes = {
+const fontSize = {
   big: pixelToRem(35),
   middle: pixelToRem(30),
   small: pixelToRem(25),
@@ -20,14 +20,15 @@ const fontSizes = {
   xxSmall: pixelToRem(15),
 };
 
-const colors = {
+const color = {
   black: '#000',
   white: '#eee',
   grey: '#b3b3b3',
+  darkGrey: '#555',
   lightGery: '#f9f9f9',
   blue: '#4348a2',
   borderBlue: '#868ceb',
-  lightBlue: '#4348a2',
+  lightBlue: '#e7e8f9',
 };
 
 const common = {
@@ -42,11 +43,19 @@ const common = {
     justify-content: center;
     align-items: center;
   `,
+  hideScrollBar: `
+  overflow-x: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  ::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
+  `,
 };
 
 const theme = {
-  fontSizes,
-  colors,
+  fontSize,
+  color,
   common,
   device,
 };
