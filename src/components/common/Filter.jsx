@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
-const Filter = ({ text, type }) => (
-  <Wrap type={type}>
+const Filter = ({ text, type, onClick }) => (
+  <Wrap type={type} onClick={onClick}>
     {text}
     <ArrowBottom>
       <FontAwesomeIcon icon={faAngleDown} />
@@ -30,6 +30,7 @@ const Wrap = styled.button`
   font-weight: 600;
   border: 1px solid ${({ theme }) => theme.color.grey};
   white-space: nowrap;
+  cursor: pointer;
   ${({ type }) =>
     type === 'main' &&
     css`

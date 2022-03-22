@@ -25,7 +25,7 @@ const color = {
   white: '#eee',
   grey: '#b3b3b3',
   darkGrey: '#555',
-  lightGery: '#f9f9f9',
+  lightGrey: '#f9f9f9',
   blue: '#4348a2',
   borderBlue: '#868ceb',
   lightBlue: '#e7e8f9',

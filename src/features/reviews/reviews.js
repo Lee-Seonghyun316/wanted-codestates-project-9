@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  page: 1,
+  latestPage: 1,
+  likesPage: 1,
   latestData: [],
   likeOrderData: [],
 };
@@ -22,8 +23,8 @@ export const reviewSlice = createSlice({
         state.likeOrderData.sort((a, b) => b.like - a.like);
       }
     },
-    incrementPage: (state) => {
-      state.page += 1;
+    incrementPage: (state, action) => {
+      action.payload === 'recent' ? (state.latestPage += 1) : (state.likesPage += 1);
     },
   },
 });
