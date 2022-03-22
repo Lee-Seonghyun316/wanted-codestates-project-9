@@ -9,16 +9,18 @@ import Head from './common/Head';
 import Filter from './common/Filter';
 import Grid from './Grid';
 import List from './List';
-import { addData, incrementPage } from '../features/reviews/reviews';
+import { addLatestData, incrementPage, sortByLikes, addLikeOrderData } from '../features/reviews/reviews';
 
 const ReviewListPage = () => {
   const [target, setTarget] = useState(null);
   const page = useSelector((state) => state.reviews.page);
+  const likeOrderData = useSelector((state) => state.reviews.likeOrderData);
   const dispatch = useDispatch();
-  const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReviewsQuery(page);
   const [loading, setLoading] = useState(false);
   const [throttle, setThrottle] = useState(false);
   const [viewType, setViewType] = useState('list');
+  const [sort, setSort] = useState('like');
+  const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReviewsQuery({ page: page, sort: sort });
 
   useEffect(() => {
     window.onbeforeunload = function pushRefresh() {
@@ -36,7 +38,7 @@ const ReviewListPage = () => {
     return () => observer && observer.disconnect();
   }, [target]);
   useEffect(() => {
-    data && dispatch(addData(data.data));
+    data && (sort === 'recent' ? dispatch(addLatestData(data.data)) : dispatch(addLikeOrderData(data.data)));
   }, [data]);
   useEffect(() => {
     if (isLoading) {
@@ -91,7 +93,7 @@ const ReviewListPage = () => {
           <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
         </ChoiceButton>
       </ViewChoice>
-      {viewType === 'grid' ? <Grid /> : <List />}
+      {viewType === 'grid' ? <Grid sort={sort} /> : <List sort={sort} />}
       <div ref={setTarget} />
     </Wrap>
   );

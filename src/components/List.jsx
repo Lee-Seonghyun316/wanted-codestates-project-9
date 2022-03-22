@@ -2,11 +2,19 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import styled, { css } from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
-const List = () => {
-  const reviews = useSelector((state) => state.reviews.data);
+const List = ({ sort }) => {
+  const { latestData, likeOrderData } = useSelector(
+    (state) => ({
+      latestData: state.reviews.latestData,
+      likeOrderData: state.reviews.likeOrderData,
+    }),
+    shallowEqual
+  );
+
+  const reviews = sort === 'recent' ? latestData : likeOrderData;
   const renderStar = (point) => {
     const pointArr = [];
     for (let i = 0; i < point; i++) {

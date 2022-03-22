@@ -8,7 +8,7 @@ export const reviewsApi = createApi({
   }),
   endpoints: (builder) => ({
     getReviews: builder.query({
-      query: (page) => `/v1/contents?page=${page}&sort=recent&gender=unisex&brandno=&hashtags=&category=`,
+      query: (query) => `/v1/contents?page=${query.page}&sort=${query.sort}&gender=unisex&brandno=&hashtags=&category=`,
       keepUnusedDataFor: 5,
     }),
   }),

@@ -2,15 +2,25 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   page: 1,
-  data: [],
+  latestData: [],
+  likeOrderData: [],
 };
 
 export const reviewSlice = createSlice({
   name: 'reviews',
   initialState,
   reducers: {
-    addData: (state, action) => {
-      state.data = [...state.data, ...action.payload];
+    addLatestData: (state, action) => {
+      state.latestData = [...state.latestData, ...action.payload];
+    },
+    addLikeOrderData: (state, action) => {
+      state.likeOrderData = [...state.likeOrderData, ...action.payload];
+    },
+    sortByLikes: (state, action) => {
+      if (state.likeOrderData.length < state.latestData.length) {
+        state.likeOrderData = [...state.latestData];
+        state.likeOrderData.sort((a, b) => b.like - a.like);
+      }
     },
     incrementPage: (state) => {
       state.page += 1;
@@ -18,6 +28,6 @@ export const reviewSlice = createSlice({
   },
 });
 
-export const { addData, incrementPage } = reviewSlice.actions;
+export const { addLatestData, incrementPage, sortByLikes, addLikeOrderData } = reviewSlice.actions;
 
 export default reviewSlice.reducer;

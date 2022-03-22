@@ -1,9 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 
-const Grid = () => {
-  const reviews = useSelector((state) => state.reviews.data);
+const Grid = ({ sort }) => {
+  const { latestData, likeOrderData } = useSelector(
+    (state) => ({
+      latestData: state.reviews.latestData,
+      likeOrderData: state.reviews.likeOrderData,
+    }),
+    shallowEqual
+  );
+
+  const reviews = sort === 'recent' ? latestData : likeOrderData;
 
   return (
     <Wrap>
