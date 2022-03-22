@@ -122,7 +122,7 @@ const ReviewListPage = () => {
   };
 
   return (
-    <Wrap>
+    <Wrap modalVisible={sortModal}>
       <Head />
       <Filters>
         <Filter text="정렬" type="main" onClick={handleClickSort} />
@@ -166,7 +166,9 @@ const ReviewListPage = () => {
 
 export default ReviewListPage;
 
-const Wrap = styled.div``;
+const Wrap = styled.div`
+  ${({ modalVisible }) => modalVisible && 'position:fixed;width:100%;height:100%;overflow:hidden;'};
+`;
 
 const LoaderWrap = styled.div`
   position: fixed;
