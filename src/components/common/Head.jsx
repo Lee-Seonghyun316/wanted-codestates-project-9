@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faMagnifyingGlass, faBagShopping } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
-const Header = () => {
+const Head = () => {
   return (
     <Wrap>
       <Main>
@@ -29,9 +29,9 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Head;
 
-const Wrap = styled.div`
+const Wrap = styled.header`
   display: flex;
   flex-direction: column;
 `;
