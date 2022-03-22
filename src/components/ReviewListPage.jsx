@@ -99,6 +99,26 @@ const ReviewListPage = () => {
     { id: 'reply', name: '댓글 많은순' },
     { id: 'share', name: '공유 많은순' },
   ];
+  const deleteTag = async () => {
+    setSort('recent');
+    await dispatch(deleteData());
+    await dispatch(pageInitialize());
+  };
+  const searchTagName = (id) => {
+    return sortData.map(
+      (data) =>
+        data.id === id && (
+          <Tag key={data.id}>
+            {data.name}
+            {id !== 'recent' && (
+              <DeleteTag onClick={deleteTag}>
+                <DeleteImg src="https://static.balaan.co.kr/mobile/img/icon/search/ic_close_b.png" alt="delete" />
+              </DeleteTag>
+            )}
+          </Tag>
+        )
+    );
+  };
   const closeModal = () => {
     sortModalVisible(false);
   };
@@ -137,7 +157,7 @@ const ReviewListPage = () => {
         </SortModal>
       )}
       <Tags>
-        <Tag>최신순</Tag>
+        {searchTagName(sort)}
         <Tag>전체</Tag>
         <Refresh>
           <FontAwesomeIcon icon={faArrowRotateRight} />
@@ -280,6 +300,14 @@ const Tag = styled.li`
   color: ${({ theme }) => theme.color.blue};
   font-size: ${({ theme }) => theme.fontSize.xSmall};
   font-weight: 600;
+`;
+
+const DeleteTag = styled.button`
+  cursor: pointer;
+`;
+
+const DeleteImg = styled.img`
+  width: 0.8rem;
 `;
 
 const Refresh = styled.button`
