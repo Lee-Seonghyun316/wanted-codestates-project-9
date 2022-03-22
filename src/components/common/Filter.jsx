@@ -16,6 +16,12 @@ const Filter = ({ text, type, onClick }) => (
 Filter.propTypes = {
   text: PropTypes.string,
   type: PropTypes.string,
+  onClick: PropTypes.func,
+};
+
+Filter.defaultProps = {
+  text: '정렬',
+  type: '',
 };
 
 export default Filter;

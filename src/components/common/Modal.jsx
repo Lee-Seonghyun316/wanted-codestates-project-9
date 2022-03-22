@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { sortData } from '../../data';
 
 const Modal = ({ closeModal, handleClickSortType, handleApplyButton, sort }) => {
@@ -22,6 +23,17 @@ const Modal = ({ closeModal, handleClickSortType, handleApplyButton, sort }) => 
       </SortModal>
     </Wrap>
   );
+};
+
+Modal.propTypes = {
+  closeModal: PropTypes.func,
+  handleClickSortType: PropTypes.func,
+  handleApplyButton: PropTypes.func,
+  sort: PropTypes.string,
+};
+
+Modal.defaultProps = {
+  sort: 'recent',
 };
 
 export default Modal;
