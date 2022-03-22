@@ -147,13 +147,15 @@ const Contents = styled.p`
   letter-spacing: -0.025rem;
   white-space: pre-wrap;
   color: #020202;
-  font-family: lato, SpoqaHanSansNeo !important;
+  font-family: lato, SpoqaHanSansNeo;
 `;
 
 const Questions = styled.div`
   display: flex;
   align-items: flex-start;
   padding: 0 1.6rem 2.05rem;
+  overflow-x: scroll;
+  ${({ theme }) => theme.common.hideScrollBar}
 `;
 
 const Question = styled.div`
@@ -161,7 +163,7 @@ const Question = styled.div`
   align-items: center;
   white-space: nowrap;
   font-size: 1.05rem;
-  font-family: lato, SpoqaHanSansNeo !important;
+  font-family: lato, SpoqaHanSansNeo;
   margin-right: 0.55rem;
   background: white;
   border: 1px solid #e5e5e5;

@@ -195,7 +195,7 @@ const Tags = styled.ul`
   gap: 10px;
   padding: 1rem;
   margin-top: 1rem;
-  background-color: ${({ theme }) => theme.color.lightGery};
+  background-color: ${({ theme }) => theme.color.lightGrey};
 `;
 
 const Tag = styled.li`
