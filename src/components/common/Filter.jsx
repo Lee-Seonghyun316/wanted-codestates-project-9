@@ -23,7 +23,7 @@ export default Filter;
 const Wrap = styled.button`
   display: flex;
   gap: 5px;
-  padding: 10px 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 3rem;
   background: none;
   font-size: ${({ theme }) => theme.fontSize.xSmall};

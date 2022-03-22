@@ -8,7 +8,7 @@ const Head = () => {
   return (
     <Wrap>
       <Main>
-        <Icons>
+        <Icons position="left">
           <FontAwesomeIcon icon={faBars} />
           <FontAwesomeIcon icon={faMagnifyingGlass} />
         </Icons>
@@ -34,6 +34,7 @@ export default Head;
 const Wrap = styled.header`
   display: flex;
   flex-direction: column;
+  margin: 0 1rem;
 `;
 
 const Main = styled.div`
@@ -41,19 +42,22 @@ const Main = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   height: 5rem;
 `;
 
 const Icons = styled.div`
+  flex: 1;
   display: flex;
+  justify-content: ${({ position }) => (position === 'left' ? 'flex-start' : 'flex-end')};
   gap: 2rem;
   font-size: 2rem;
-  padding: 0 2rem;
+  padding: 0 1rem;
 `;
 
 const Logo = styled.img`
-  width: 10.5rem;
+  flex: 2;
+  max-width: 10.5rem;
 `;
 
 const Nav = styled.ul`
@@ -65,11 +69,15 @@ const Nav = styled.ul`
   font-weight: 700;
   color: ${({ theme }) => theme.color.darkGrey};
   border-bottom: 2px solid #e9e8e8;
+  overflow-x: scroll;
+  gap: 1rem;
 `;
 
 const NavItem = styled.li`
+  flex: 1;
+  text-align: center;
   white-space: nowrap;
-  padding: 0 1.3rem 0.6rem;
+  padding-bottom: 0.4rem;
   ${({ selected, theme }) =>
     selected &&
     css`

@@ -17,6 +17,8 @@ import {
   pageInitialize,
   randomSort,
 } from '../features/reviews/reviews';
+import { sortData } from '../data';
+import Modal from './common/Modal';
 
 const ReviewListPage = () => {
   const [target, setTarget] = useState(null);
@@ -88,17 +90,6 @@ const ReviewListPage = () => {
     await dispatch(deleteData());
     await dispatch(pageInitialize());
   };
-  const sortData = [
-    {
-      id: 'recent',
-      name: '최신순',
-    },
-    { id: 'like', name: '리뷰 카운터순' },
-    { id: 'random', name: '랜덤순' },
-    { id: 'best', name: '베스트리뷰만 보기' },
-    { id: 'reply', name: '댓글 많은순' },
-    { id: 'share', name: '공유 많은순' },
-  ];
   const deleteTag = async () => {
     setSort('recent');
     await dispatch(deleteData());
@@ -139,22 +130,13 @@ const ReviewListPage = () => {
         <Filter text="인기 디자이너" />
         <Filter text="카테고리" />
       </Filters>
-      {sortModal && <BlackOut onClick={closeModal} />}
       {sortModal && (
-        <SortModal>
-          <ModalTitle>정렬</ModalTitle>
-          <SortTypes>
-            {sortData.map((item) => (
-              <SortType selected={sort === item.id} onClick={handleClickSortType} id={item.id} key={item.id}>
-                {item.name}
-                <CheckBox selected={sort === item.id}>
-                  <Check selected={sort === item.id} />
-                </CheckBox>
-              </SortType>
-            ))}
-          </SortTypes>
-          <ApplyButton onClick={handleApplyButton}>적용하기</ApplyButton>
-        </SortModal>
+        <Modal
+          closeModal={closeModal}
+          handleClickSortType={handleClickSortType}
+          handleApplyButton={handleApplyButton}
+          sort={sort}
+        />
       )}
       <Tags>
         {searchTagName(sort)}
@@ -205,85 +187,6 @@ const Filters = styled.div`
   ${({ theme }) => theme.common.hideScrollBar}
 `;
 
-const BlackOut = styled.div`
-  position: absolute;
-  z-index: 9;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: ${({ theme }) => theme.color.black};
-  opacity: 0.4;
-`;
-
-const SortModal = styled.div`
-  position: absolute;
-  bottom: 0;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  margin-top: auto;
-  flex: 1;
-  background-color: #fff;
-  z-index: 10;
-`;
-
-const ModalTitle = styled.h1`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 1.8rem 0 1.3rem 0;
-  font-size: 1.3rem;
-`;
-
-const SortTypes = styled.ul`
-  margin-bottom: 1.6rem;
-  overflow-x: hidden;
-  padding: 0 1.8rem;
-`;
-
-const SortType = styled.li`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 0.2rem;
-  font-size: ${({ theme }) => theme.fontSize.xSmall};
-  border-bottom: 1px solid #ccc;
-  font-weight: bolder;
-  color: ${({ selected, theme }) => (selected ? theme.color.black : 'grey')};
-  cursor: pointer;
-`;
-
-const CheckBox = styled.div`
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 1px solid ${({ selected, theme }) => (selected ? theme.color.black : '#ccc')};
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Check = styled.div`
-  background-color: ${({ selected, theme }) => (selected ? theme.color.black : 'white')};
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-`;
-
-const ApplyButton = styled.button`
-  display: flex;
-  justify-content: center;
-  margin: 2rem 1.8rem;
-  flex: 1;
-  padding: 1rem 0;
-  background-color: #000;
-  color: #fff;
-  border-radius: 0.2rem;
-  font-size: ${({ theme }) => theme.fontSize.small};
-  cursor: pointer;
-`;
-
 const Tags = styled.ul`
   position: relative;
   display: flex;
@@ -294,7 +197,7 @@ const Tags = styled.ul`
 `;
 
 const Tag = styled.li`
-  padding: 10px 1rem;
+  padding: 0.5rem 1rem;
   background-color: ${({ theme }) => theme.color.lightBlue};
   border-radius: 3rem;
   color: ${({ theme }) => theme.color.blue};
