@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,7 +9,14 @@ import Head from './common/Head';
 import Filter from './common/Filter';
 import Grid from './Grid';
 import List from './List';
-import { addData, incrementPage } from '../features/reviews/reviews';
+import {
+  addData,
+  addRandomData,
+  deleteData,
+  incrementPage,
+  pageInitialize,
+  randomSort,
+} from '../features/reviews/reviews';
 
 const ReviewListPage = () => {
   const [target, setTarget] = useState(null);
@@ -19,11 +26,10 @@ const ReviewListPage = () => {
   const [viewType, setViewType] = useState('grid');
   const [sort, setSort] = useState('recent');
   const [sortModal, sortModalVisible] = useState(false);
-  const [random, setRandom] = useState(false);
   const dispatch = useDispatch();
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReviewsQuery({
-    page,
-    sort,
+    page: page,
+    sort: sort === 'random' ? 'recent' : sort,
   });
 
   useEffect(() => {
@@ -35,14 +41,16 @@ const ReviewListPage = () => {
     let observer;
     if (target) {
       observer = new IntersectionObserver(onIntersect, {
-        threshold: 0.4,
+        threshold: 0.2,
       });
       observer.observe(target);
     }
     return () => observer && observer.disconnect();
   }, [target]);
   useEffect(() => {
-    data && dispatch(addData(data.data));
+    if (data) {
+      sort === 'random' ? dispatch(addRandomData(data.data)) : dispatch(addData(data.data));
+    }
   }, [data]);
   useEffect(() => {
     if (isLoading) {
@@ -70,9 +78,15 @@ const ReviewListPage = () => {
     const value = e.currentTarget.id;
     setViewType(value);
   };
-  const handleClickSortType = (e) => {
+  const handleClickSortType = async (e) => {
     const value = e.currentTarget.id;
-    setSort(value);
+    await setSort(value);
+    if (value === 'random') {
+      dispatch(randomSort());
+      return;
+    }
+    await dispatch(deleteData());
+    await dispatch(pageInitialize());
   };
   const sortData = [
     {
@@ -80,7 +94,10 @@ const ReviewListPage = () => {
       name: '최신순',
     },
     { id: 'like', name: '리뷰 카운터순' },
-    { id: 'random', name: '랜덤' },
+    { id: 'random', name: '랜덤순' },
+    { id: 'best', name: '베스트리뷰만 보기' },
+    { id: 'reply', name: '댓글 많은순' },
+    { id: 'share', name: '공유 많은순' },
   ];
   const closeModal = () => {
     sortModalVisible(false);

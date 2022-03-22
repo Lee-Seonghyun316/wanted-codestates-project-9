@@ -5,15 +5,14 @@ const initialState = {
   data: [],
 };
 
-const shuffle = (array) => {
+function shuffle(array) {
   //Fisher-Yates shuffle
-  for (let index = array.length - 1; index > 0; index--) {
-    const randomPosition = Math.floor(Math.random() * (index + 1));
-    const temporary = array[index];
-    array[index] = array[randomPosition];
-    array[randomPosition] = temporary;
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-};
+  return array;
+}
 
 export const reviewSlice = createSlice({
   name: 'reviews',
@@ -22,18 +21,27 @@ export const reviewSlice = createSlice({
     addData: (state, action) => {
       state.data = [...state.data, ...action.payload];
     },
+    deleteData: (state) => {
+      state.data = [];
+    },
+    pageInitialize: (state) => {
+      state.page = 1;
+    },
     incrementPage: (state, action) => {
       state.page += 1;
     },
     randomSort: (state, action) => {
-      shuffle(state.data);
+      state.data = shuffle(state.data);
     },
     addRandomData: (state, action) => {
-      state.data = [...state.data, ...shuffle(action.payload)];
+      // 안되는 이유?
+      // state.data = [...state.data, ...shuffle(action.payload)];
+      const shuffled = [...action.payload].sort(() => Math.random() - 0.5);
+      state.data = [...state.data, ...shuffled];
     },
   },
 });
 
-export const { addData, incrementPage, randomSort, addRandomData } = reviewSlice.actions;
+export const { addData, incrementPage, randomSort, addRandomData, deleteData, pageInitialize } = reviewSlice.actions;
 
 export default reviewSlice.reducer;
