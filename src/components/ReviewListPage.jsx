@@ -141,7 +141,7 @@ const ReviewListPage = () => {
       <Tags>
         {searchTagName(sort)}
         <Tag>전체</Tag>
-        <Refresh>
+        <Refresh onClick={deleteTag}>
           <FontAwesomeIcon icon={faArrowRotateRight} />
         </Refresh>
       </Tags>
@@ -222,6 +222,7 @@ const Refresh = styled.button`
   right: 1rem;
   color: ${({ theme }) => theme.color.grey};
   font-size: ${({ theme }) => theme.fontSize.xSmall};
+  cursor: pointer;
 `;
 
 const ViewChoice = styled.div`
