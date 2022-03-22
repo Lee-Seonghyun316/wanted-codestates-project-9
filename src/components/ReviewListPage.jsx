@@ -9,31 +9,26 @@ import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { addData, incrementPage } from '../features/reviews/reviews';
 import ReactLoading from 'react-loading';
+import Grid from './Grid';
 
 const ReviewListPage = () => {
   const [target, setTarget] = useState(null);
   const page = useSelector((state) => state.reviews.page);
   const reviews = useSelector((state) => state.reviews.data);
   const dispatch = useDispatch();
-  const { data, error, isSuccess, isError, isFetching } = useGetReviewsQuery(page);
+  const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReviewsQuery(page);
   const [loading, setLoading] = useState(false);
-  const [debounceTimer, setDebounceTimer] = useState(0);
-  const [viewType, setViewType] = useState('list');
+  const [throttle, setThrottle] = useState(0);
+  const [viewType, setViewType] = useState('grid');
   const onIntersect = async ([entry], observer) => {
     if (entry.isIntersecting) {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-      const newTimer = setTimeout(async () => {
-        try {
-          observer.unobserve(entry.target);
+      if (!throttle) {
+        setThrottle(true);
+        setTimeout(async () => {
           await dispatch(incrementPage());
-          observer.observe(entry.target);
-        } catch (e) {
-          console.error('error', e);
-        }
-      }, 800);
-      setDebounceTimer(newTimer);
+          setThrottle(false);
+        }, 300);
+      }
     }
   };
   useEffect(() => {
@@ -50,13 +45,13 @@ const ReviewListPage = () => {
     data && dispatch(addData(data.data));
   }, [data]);
   useEffect(() => {
-    if (isFetching) {
+    if (isLoading) {
       setLoading(true);
       setTimeout(() => {
         setLoading(false);
       }, 2000);
     }
-  }, [isFetching]);
+  }, [isLoading]);
 
   const renderStar = (point) => {
     const pointArr = [];
@@ -111,25 +106,8 @@ const ReviewListPage = () => {
           <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />
         </LoaderWrap>
       )}
-      {viewType === 'grid' && (
-        <ViewContainer>
-          <ViewChoice>
-            <ChoiceButton selected={true}>
-              <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-01@2x.png" alt="gird" />
-            </ChoiceButton>
-            <ChoiceButton>
-              <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
-            </ChoiceButton>
-          </ViewChoice>
-          <Grid>
-            {reviews.map((data) => (
-              <Img src={`https://i.balaan.io/review/${data.img[0]}`} alt="reviewImg" key={data.id} />
-            ))}
-          </Grid>
-          <div ref={setTarget} />
-        </ViewContainer>
-      )}
-      {reviews.length > 0 && (
+      {viewType === 'grid' && <Grid setTarget={setTarget} />}
+      {viewType === 'list' && reviews.length > 0 && (
         <List>
           <ListItem>
             <Activities>
@@ -163,6 +141,7 @@ const ReviewListPage = () => {
           </ListItem>
         </List>
       )}
+      <div ref={setTarget} />
     </Wrap>
   );
 };
@@ -217,34 +196,10 @@ const Refresh = styled.button`
   font-size: ${({ theme }) => theme.fontSize.xSmall};
 `;
 
-const ViewContainer = styled.div``;
-
-const ViewChoice = styled.div`
+const ScrollDetection = styled.div`
+  background: pink;
   width: 100%;
-`;
-
-const ChoiceButton = styled.button`
-  padding: 1rem 0;
-  width: 50%;
-  border-bottom: 2px solid ${({ theme }) => theme.color.black};
-  opacity: ${({ selected }) => (selected ? 1 : 0.3)};
-`;
-
-const ViewChoiceImg = styled.img`
-  width: 2rem;
-`;
-
-const Grid = styled.section`
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-`;
-
-const Img = styled.img`
-  border-top: 2px solid white;
-  width: 33%;
-  height: 11rem;
-  object-fit: cover;
+  height: 50px;
 `;
 
 const List = styled.section``;
