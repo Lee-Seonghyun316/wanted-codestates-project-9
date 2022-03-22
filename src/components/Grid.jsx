@@ -2,21 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSelector, shallowEqual } from 'react-redux';
 
-const Grid = ({ sort }) => {
-  const { latestData, likeOrderData } = useSelector(
-    (state) => ({
-      latestData: state.reviews.latestData,
-      likeOrderData: state.reviews.likeOrderData,
-    }),
-    shallowEqual
-  );
-
-  const reviews = sort === 'recent' ? latestData : likeOrderData;
+const Grid = () => {
+  const data = useSelector((state) => state.reviews.data);
 
   return (
     <Wrap>
       <GridItems>
-        {reviews.map((data) => (
+        {data.map((data) => (
           <Img src={`https://i.balaan.io/review/${data.img[0]}`} alt="reviewImg" key={data.id} />
         ))}
       </GridItems>

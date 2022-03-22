@@ -9,17 +9,11 @@ import Head from './common/Head';
 import Filter from './common/Filter';
 import Grid from './Grid';
 import List from './List';
-import { addLatestData, incrementPage, addLikeOrderData } from '../features/reviews/reviews';
+import { addData, incrementPage } from '../features/reviews/reviews';
 
 const ReviewListPage = () => {
   const [target, setTarget] = useState(null);
-  const { latestPage, likesPage } = useSelector(
-    (state) => ({
-      latestPage: state.reviews.latestPage,
-      likesPage: state.reviews.likesPage,
-    }),
-    shallowEqual
-  );
+  const page = useSelector((state) => state.reviews.page);
   const [loading, setLoading] = useState(false);
   const [throttle, setThrottle] = useState(false);
   const [viewType, setViewType] = useState('grid');
@@ -28,8 +22,8 @@ const ReviewListPage = () => {
   const [random, setRandom] = useState(false);
   const dispatch = useDispatch();
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReviewsQuery({
-    page: sort === 'recent' ? latestPage : likesPage,
-    sort: sort,
+    page,
+    sort,
   });
 
   useEffect(() => {
@@ -48,7 +42,7 @@ const ReviewListPage = () => {
     return () => observer && observer.disconnect();
   }, [target]);
   useEffect(() => {
-    data && (sort === 'recent' ? dispatch(addLatestData(data.data)) : dispatch(addLikeOrderData(data.data)));
+    data && dispatch(addData(data.data));
   }, [data]);
   useEffect(() => {
     if (isLoading) {
@@ -66,9 +60,7 @@ const ReviewListPage = () => {
       if (!throttle) {
         setThrottle(true);
         setTimeout(async () => {
-          // 상태 문제부분
-          console.log(sort, 'sort');
-          await dispatch(incrementPage(sort));
+          await dispatch(incrementPage());
           setThrottle(false);
         }, 300);
       }
@@ -80,20 +72,15 @@ const ReviewListPage = () => {
   };
   const handleClickSortType = (e) => {
     const value = e.currentTarget.id;
-    if (value !== 'random') {
-      setSort(value);
-      setRandom(false);
-    } else {
-      setSort('');
-      setRandom(true);
-    }
+    setSort(value);
   };
   const sortData = [
     {
       id: 'recent',
       name: '최신순',
     },
-    { id: 'like', name: '좋아요 많은 순' },
+    { id: 'like', name: '리뷰 카운터순' },
+    { id: 'random', name: '랜덤' },
   ];
   const closeModal = () => {
     sortModalVisible(false);
@@ -128,12 +115,6 @@ const ReviewListPage = () => {
                 </CheckBox>
               </SortType>
             ))}
-            <SortType selected={random} onClick={handleClickSortType} id="random">
-              랜덤순
-              <CheckBox selected={random}>
-                <Check selected={random} />
-              </CheckBox>
-            </SortType>
           </SortTypes>
           <ApplyButton onClick={handleApplyButton}>적용하기</ApplyButton>
         </SortModal>
@@ -158,7 +139,7 @@ const ReviewListPage = () => {
           <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
         </ChoiceButton>
       </ViewChoice>
-      {viewType === 'grid' ? <Grid sort={sort} /> : <List sort={sort} />}
+      {viewType === 'grid' ? <Grid /> : <List />}
       <div ref={setTarget} />
     </Wrap>
   );

@@ -5,16 +5,9 @@ import styled, { css } from 'styled-components';
 import { useSelector, shallowEqual } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
-const List = ({ sort }) => {
-  const { latestData, likeOrderData } = useSelector(
-    (state) => ({
-      latestData: state.reviews.latestData,
-      likeOrderData: state.reviews.likeOrderData,
-    }),
-    shallowEqual
-  );
+const List = () => {
+  const data = useSelector((state) => state.reviews.data);
 
-  const reviews = sort === 'recent' ? latestData : likeOrderData;
   const renderStar = (point) => {
     const pointArr = [];
     for (let i = 0; i < point; i++) {
@@ -40,7 +33,7 @@ const List = ({ sort }) => {
 
   return (
     <Container>
-      {reviews.map((review) => (
+      {data.map((review) => (
         <ListItem key={review.id}>
           <Activities>
             <NickName>{review?.nickname}</NickName>

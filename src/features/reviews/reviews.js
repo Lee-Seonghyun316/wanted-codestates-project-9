@@ -1,34 +1,39 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  latestPage: 1,
-  likesPage: 1,
-  latestData: [],
-  likeOrderData: [],
+  page: 1,
+  data: [],
+};
+
+const shuffle = (array) => {
+  //Fisher-Yates shuffle
+  for (let index = array.length - 1; index > 0; index--) {
+    const randomPosition = Math.floor(Math.random() * (index + 1));
+    const temporary = array[index];
+    array[index] = array[randomPosition];
+    array[randomPosition] = temporary;
+  }
 };
 
 export const reviewSlice = createSlice({
   name: 'reviews',
   initialState,
   reducers: {
-    addLatestData: (state, action) => {
-      state.latestData = [...state.latestData, ...action.payload];
-    },
-    addLikeOrderData: (state, action) => {
-      state.likeOrderData = [...state.likeOrderData, ...action.payload];
-    },
-    sortByLikes: (state, action) => {
-      if (state.likeOrderData.length < state.latestData.length) {
-        state.likeOrderData = [...state.latestData];
-        state.likeOrderData.sort((a, b) => b.like - a.like);
-      }
+    addData: (state, action) => {
+      state.data = [...state.data, ...action.payload];
     },
     incrementPage: (state, action) => {
-      action.payload === 'recent' ? (state.latestPage += 1) : (state.likesPage += 1);
+      state.page += 1;
+    },
+    randomSort: (state, action) => {
+      shuffle(state.data);
+    },
+    addRandomData: (state, action) => {
+      state.data = [...state.data, ...shuffle(action.payload)];
     },
   },
 });
 
-export const { addLatestData, incrementPage, sortByLikes, addLikeOrderData } = reviewSlice.actions;
+export const { addData, incrementPage, randomSort, addRandomData } = reviewSlice.actions;
 
 export default reviewSlice.reducer;
