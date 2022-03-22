@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import ReactLoading from 'react-loading';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useGetReviewsQuery } from '../features/reviews/fetchReviews';
+import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
 import Head from './common/Head';
 import Filter from './common/Filter';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { addData, incrementPage } from '../features/reviews/reviews';
-import ReactLoading from 'react-loading';
 import Grid from './Grid';
 import List from './List';
+import { addData, incrementPage } from '../features/reviews/reviews';
 
 const ReviewListPage = () => {
   const [target, setTarget] = useState(null);
@@ -57,6 +57,10 @@ const ReviewListPage = () => {
       }
     }
   };
+  const handleClickViewType = (e) => {
+    const value = e.currentTarget.id;
+    setViewType(value);
+  };
 
   return (
     <Wrap>
@@ -80,10 +84,10 @@ const ReviewListPage = () => {
         </LoaderWrap>
       )}
       <ViewChoice>
-        <ChoiceButton selected={true}>
+        <ChoiceButton selected={viewType === 'grid'} onClick={handleClickViewType} id="grid">
           <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-01@2x.png" alt="gird" />
         </ChoiceButton>
-        <ChoiceButton>
+        <ChoiceButton selected={viewType === 'list'} onClick={handleClickViewType} id="list">
           <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
         </ChoiceButton>
       </ViewChoice>
@@ -152,6 +156,7 @@ const ChoiceButton = styled.button`
   width: 50%;
   border-bottom: 2px solid ${({ theme }) => theme.color.black};
   opacity: ${({ selected }) => (selected ? 1 : 0.3)};
+  cursor: pointer;
 `;
 
 const ViewChoiceImg = styled.img`
