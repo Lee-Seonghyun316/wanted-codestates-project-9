@@ -43,7 +43,6 @@ const ReviewList = ({ setCurrent, setIndex }) => {
     };
   }, []);
   useEffect(() => {
-    console.log(target);
     let observer;
     if (target) {
       observer = new IntersectionObserver(onIntersect, {

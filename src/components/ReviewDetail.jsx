@@ -3,22 +3,25 @@ import styled from 'styled-components';
 import List from './common/List';
 import { useSelector } from 'react-redux';
 
-const ReviewDetail = (index) => {
+const ReviewDetail = ({ index, setCurrent }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   const data = useSelector((state) => state.reviews.data);
-  const slicedReviews = data.slice(index.index);
+  const slicedReviews = data.slice(index);
+  const handleClickBack = () => {
+    setCurrent('list');
+  };
 
   return (
     <div>
       <Head>
-        <button>
-          <ButtonImg src="http://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_left_btn.png" alt="left" />
+        <button onClick={handleClickBack}>
+          <ButtonImg src="http://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_left_btn.png" alt="back" />
         </button>
         리뷰 상세보기
-        <button>
-          <ButtonImg src="https://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_can_btn.png" alt="left" />
+        <button onClick={handleClickBack}>
+          <ButtonImg src="https://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_can_btn.png" alt="x" />
         </button>
       </Head>
       <List data={slicedReviews} />

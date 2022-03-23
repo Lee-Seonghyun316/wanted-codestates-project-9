@@ -8,7 +8,7 @@ const ReviewScreens = () => {
   return (
     <>
       {current === 'list' && <ReviewList setCurrent={setCurrent} setIndex={setIndex} />}
-      {current === 'detail' && <ReviewDetail index={index} />}
+      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} />}
     </>
   );
 };

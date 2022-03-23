@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 const Grid = ({ handleClickDetail }) => {
   const data = useSelector((state) => state.reviews.data);
@@ -12,7 +13,7 @@ const Grid = ({ handleClickDetail }) => {
           <Img
             src={`https://i.balaan.io/review/${data.img[0]}`}
             alt="reviewImg"
-            key={data.id}
+            key={uuidv4()}
             onClick={() => handleClickDetail(index)}
           />
         ))}
