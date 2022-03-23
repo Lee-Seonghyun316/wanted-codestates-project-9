@@ -20,7 +20,7 @@ import {
 import { sortData } from '../data';
 import Modal from './common/Modal';
 
-const ReviewListPage = () => {
+const ReviewList = ({ setCurrent }) => {
   const [target, setTarget] = useState(null);
   const page = useSelector((state) => state.reviews.page);
   const [loading, setLoading] = useState(false);
@@ -120,6 +120,9 @@ const ReviewListPage = () => {
   const handleClickSort = () => {
     sortModalVisible(true);
   };
+  const handleClickDetail = () => {
+    setCurrent('detail');
+  };
 
   return (
     <Wrap modalVisible={sortModal}>
@@ -158,13 +161,13 @@ const ReviewListPage = () => {
           <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
         </ChoiceButton>
       </ViewChoice>
-      {viewType === 'grid' ? <Grid /> : <List />}
+      {viewType === 'grid' ? <Grid handleClickDetail={handleClickDetail} /> : <List />}
       <div ref={setTarget} />
     </Wrap>
   );
 };
 
-export default ReviewListPage;
+export default ReviewList;
 
 const Wrap = styled.div`
   ${({ modalVisible }) => modalVisible && 'position:fixed;width:100%;height:100%;overflow:hidden;'};

@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSelector, shallowEqual } from 'react-redux';
 
-const Grid = () => {
+const Grid = ({ handleClickDetail }) => {
   const data = useSelector((state) => state.reviews.data);
 
   return (
     <Wrap>
-      <GridItems>
+      <GridItems onClick={handleClickDetail}>
         {data.map((data) => (
           <Img src={`https://i.balaan.io/review/${data.img[0]}`} alt="reviewImg" key={data.id} />
         ))}

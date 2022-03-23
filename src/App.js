@@ -2,13 +2,13 @@ import React from 'react';
 import GlobalStyle from './GlobalStyle';
 import { ThemeProvider } from 'styled-components';
 import theme from './theme';
-import ReviewListPage from './components/ReviewListPage';
+import ReviewScreens from './components/ReviewScreens';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <ReviewListPage />
+      <ReviewScreens />
     </ThemeProvider>
   );
 }
