@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,7 +8,7 @@ import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
 import Head from './common/Head';
 import Filter from './common/Filter';
 import Grid from './Grid';
-import List from './List';
+import List from './common/List';
 import {
   addData,
   addRandomData,
@@ -22,7 +22,10 @@ import Modal from './common/Modal';
 
 const ReviewList = ({ setCurrent }) => {
   const [target, setTarget] = useState(null);
-  const page = useSelector((state) => state.reviews.page);
+  const { page, reviews } = useSelector(
+    (state) => ({ page: state.reviews.page, reviews: state.reviews.data }),
+    shallowEqual
+  );
   const [loading, setLoading] = useState(false);
   const [throttle, setThrottle] = useState(false);
   const [viewType, setViewType] = useState('grid');
@@ -161,7 +164,7 @@ const ReviewList = ({ setCurrent }) => {
           <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
         </ChoiceButton>
       </ViewChoice>
-      {viewType === 'grid' ? <Grid handleClickDetail={handleClickDetail} /> : <List />}
+      {viewType === 'grid' ? <Grid handleClickDetail={handleClickDetail} /> : <List data={reviews} />}
       <div ref={setTarget} />
     </Wrap>
   );
