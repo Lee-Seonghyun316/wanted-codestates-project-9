@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 
-const CommentForm = ({ newComment, placeholder, depth }) => {
+const CommentForm = ({ newComment, placeholder, depth, fixedInput, fixComment }) => {
   const [input, setInput] = useState('');
+  const inputRef = useRef(null);
+  useEffect(() => {
+    fixedInput && setInput(fixedInput);
+    inputRef.current.focus();
+  }, [fixedInput]);
   const handleChange = (e) => {
     setInput(e.target.value);
   };
   const handleSubmit = (e) => {
-    console.log(input);
-    newComment(e, depth, input);
+    fixComment ? fixComment(e, depth, input) : newComment(e, depth, input);
     setInput('');
   };
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Input placeholder={placeholder} onChange={handleChange} value={input} />
+      <Input placeholder={placeholder} onChange={handleChange} value={input} ref={inputRef} />
       <Posting>게시</Posting>
     </Form>
   );

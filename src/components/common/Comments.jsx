@@ -10,6 +10,7 @@ const Comments = ({ id }) => {
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReplyQuery(id);
   const [comments, setComments] = useState([]);
   const [deepIndex, setDeepIndex] = useState(null);
+  const [fixed, setFixed] = useState(false);
   useEffect(() => {
     setComments(data);
   }, [data]);
@@ -34,7 +35,6 @@ const Comments = ({ id }) => {
       };
       let newArray = [...comments];
       newArray.splice(deepIndex + 1, 0, newComment);
-      console.log(newArray);
       setComments([...newArray]);
     }
   };
@@ -43,6 +43,30 @@ const Comments = ({ id }) => {
   };
   const handleClickCancelComment = () => {
     setDeepIndex(null);
+  };
+  const handleClickFixed = (index) => {
+    setFixed(true);
+    handleClickDeepComment(index);
+  };
+  const handleClickCancelFixed = () => {
+    setFixed(false);
+    handleClickCancelComment();
+  };
+  const fixComment = (e, depth, value) => {
+    e.preventDefault();
+    if (deepIndex !== null) {
+      const fixComment = {
+        nickname: NICKNAME,
+        id: uuidv4(),
+        depth: depth - 1,
+        contents: value,
+        dt: '지금',
+      };
+      let newArray = [...comments];
+      newArray.splice(deepIndex, 1, fixComment);
+      setComments([...newArray]);
+    }
+    handleClickCancelFixed();
   };
 
   return (
@@ -63,9 +87,20 @@ const Comments = ({ id }) => {
               ) : (
                 <Detail onClick={handleClickCancelComment}>답글취소</Detail>
               )}
+              {NICKNAME === reply.nickname && !fixed ? (
+                <Detail onClick={() => handleClickFixed(index)}>수정하기</Detail>
+              ) : (
+                <Detail onClick={handleClickCancelFixed}>수정취소</Detail>
+              )}
             </DetailContainer>
             {deepIndex === index && (
-              <CommentForm newComment={newComment} placeholder={`${NICKNAME} (으)로 답글`} depth={reply.depth + 1} />
+              <CommentForm
+                newComment={newComment}
+                placeholder={fixed ? '' : `${NICKNAME} (으)로 답글`}
+                depth={reply.depth + 1}
+                fixedInput={fixed ? comments[index].contents : null}
+                fixComment={fixed ? fixComment : null}
+              />
             )}
           </Comment>
         ))}
