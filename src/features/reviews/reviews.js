@@ -34,10 +34,8 @@ export const reviewSlice = createSlice({
       state.data = shuffle(state.data);
     },
     addRandomData: (state, action) => {
-      // 안되는 이유?
-      // state.data = [...state.data, ...shuffle(action.payload)];
-      const shuffled = [...action.payload].sort(() => Math.random() - 0.5);
-      state.data = [...state.data, ...shuffled];
+      const newArr = [...action.payload];
+      state.data = [...state.data, ...shuffle(newArr)];
     },
   },
 });
