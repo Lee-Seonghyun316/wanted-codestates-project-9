@@ -34,7 +34,6 @@ export default Head;
 const Wrap = styled.header`
   display: flex;
   flex-direction: column;
-  margin: 0 1rem;
 `;
 
 const Main = styled.div`
