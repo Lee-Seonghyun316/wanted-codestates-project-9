@@ -1,29 +1,62 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useGetReplyQuery } from '../../features/reviews/fetchReply';
 import { v4 as uuidv4 } from 'uuid';
+import CommentForm from './CommentForm';
+
+const NICKNAME = 'FEDeveloper';
 
 const Comments = ({ id }) => {
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReplyQuery(id);
+  const [comments, setComments] = useState([]);
+  const [deppIndex, setDeepIndex] = useState(null);
+  useEffect(() => {
+    setComments(data);
+  }, [data]);
+  const newComment = (e, depth, value) => {
+    e.preventDefault();
+    const newComment = { nickname: NICKNAME, id: uuidv4(), depth: depth, contents: value, dt: '지금' };
+    depth === 0 && setComments((comments) => [...comments, newComment]);
+    if (deppIndex !== null) {
+      let newArray = [...comments];
+      newArray.splice(deppIndex + 1, 0, newComment);
+      console.log(newArray);
+      setComments([...newArray]);
+    }
+  };
+  const handleClickDeepComment = (index) => {
+    setDeepIndex(index);
+  };
+  const handleClickCancelComment = () => {
+    setDeepIndex(null);
+  };
 
   return (
     <Wrap>
-      {data &&
-        data.map((reply) => (
+      {comments &&
+        comments.map((reply, index) => (
           <Comment id={reply.id} key={uuidv4()} depth={reply.depth}>
             <Id>{reply.nickname}</Id>
             <Text dangerouslySetInnerHTML={{ __html: reply.contents }}></Text>
             {/*<Text>{reply.contents}</Text>*/}
-            <Detail>
-              <DetailText>{reply.dt}</DetailText>
-              <DetailText>답글달기</DetailText>
-            </Detail>
+            <DetailContainer>
+              <Detail>{reply.dt}</Detail>
+              {deppIndex !== index ? (
+                <Detail onClick={() => handleClickDeepComment(index)}>답글달기</Detail>
+              ) : (
+                <Detail onClick={handleClickCancelComment}>답글취소</Detail>
+              )}
+            </DetailContainer>
+            {deppIndex === index && (
+              <CommentForm
+                newComment={newComment}
+                placeholder={`${NICKNAME} (으)로 답글 달기`}
+                depth={reply.depth + 1}
+              />
+            )}
           </Comment>
         ))}
-      <InputContainer>
-        <Input placeholder="댓글 달기" />
-        <Posting>게시</Posting>
-      </InputContainer>
+      {deppIndex === null && <CommentForm newComment={newComment} placeholder="댓글 달기" depth={0} />}
     </Wrap>
   );
 };
@@ -54,45 +87,13 @@ const Id = styled.h1`
 
 const Text = styled.p``;
 
-const Detail = styled.div`
+const DetailContainer = styled.div`
   font-size: 1rem;
   margin-top: 0.4rem;
   display: flex;
 `;
 
-const DetailText = styled.p`
+const Detail = styled.p`
   color: #999;
   margin-right: 1.7rem;
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-`;
-
-const Input = styled.input`
-  border-radius: 4rem 0 0 4rem;
-  width: 100%;
-  background: #fff !important;
-  border: 1px solid #ddd;
-  padding: 1rem 1rem 1rem 2rem;
-  border-right: 0;
-  display: block;
-  font-size: 1.3rem;
-  color: #333;
-`;
-
-const Posting = styled.button`
-  border-radius: 0 4rem 4rem 0;
-  width: 7rem;
-  cursor: pointer;
-  background: #fff !important;
-  border: 1px solid #ddd;
-  padding: 1rem 2rem 1rem;
-  border-left: 0;
-  display: block;
-  font-size: 1.3rem;
-  color: #333;
-  white-space: nowrap;
-  cursor: pointer;
 `;
