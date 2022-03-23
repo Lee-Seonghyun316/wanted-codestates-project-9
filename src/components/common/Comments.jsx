@@ -10,7 +10,7 @@ const Comments = ({ id }) => {
     <Wrap>
       {data &&
         data.map((reply) => (
-          <Comment id={reply.id} key={uuidv4()}>
+          <Comment id={reply.id} key={uuidv4()} depth={reply.depth}>
             <Id>{reply.nickname}</Id>
             <Text>{reply.contents}</Text>
             <Detail>
@@ -37,6 +37,7 @@ const Comment = styled.div`
   font-size: 1.2rem;
   font-weight: normal;
   line-height: 1.5;
+  ${({ depth }) => `margin-left: ${depth * 3}rem`}
 `;
 
 const Id = styled.h1`
