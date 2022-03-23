@@ -3,18 +3,19 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import ListItem from './common/ListItem';
 import { v4 as uuidv4 } from 'uuid';
+import { useGetReplyQuery } from '../features/reviews/fetchReply';
 
 const ReviewDetail = ({ index, setCurrent }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const data = useSelector((state) => state.reviews.data);
-  const slicedReviews = data.slice(index);
+  const reviews = useSelector((state) => state.reviews.data);
+  const slicedReviews = reviews.slice(index);
   const handleClickBack = () => {
     setCurrent('list');
   };
-  console.log(slicedReviews[0].id);
-
+  const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReplyQuery(slicedReviews[0].id);
+  console.log(data);
   return (
     <div>
       <Head>
@@ -28,17 +29,19 @@ const ReviewDetail = ({ index, setCurrent }) => {
       </Head>
       <section>
         {slicedReviews.map((review) => (
-          <div>
+          <div key={uuidv4()}>
             <ListItem review={review} key={uuidv4()} />
             <Comments>
-              <Comment>
-                <Id>admin</Id>
-                <Text>금주의 베스트 리뷰로 선정되어 상품권 10,000원이 발급 되었습니다!</Text>
-                <Detail>
-                  <DetailText>55주</DetailText>
-                  <DetailText>답글달기</DetailText>
-                </Detail>
-              </Comment>
+              {data.map((reply) => (
+                <Comment id={reply.id}>
+                  <Id>{reply.admin}</Id>
+                  <Text>{reply.contents}</Text>
+                  <Detail>
+                    <DetailText>{reply.dt}</DetailText>
+                    <DetailText>답글달기</DetailText>
+                  </Detail>
+                </Comment>
+              ))}
             </Comments>
           </div>
         ))}
@@ -77,6 +80,7 @@ const ButtonImg = styled.img`
 
 const Comments = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 1.2rem;
   padding: 1.2rem 1.6rem;
   background: #f9f9f9;
