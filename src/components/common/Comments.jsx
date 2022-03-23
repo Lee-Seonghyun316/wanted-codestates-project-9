@@ -12,7 +12,8 @@ const Comments = ({ id }) => {
         data.map((reply) => (
           <Comment id={reply.id} key={uuidv4()} depth={reply.depth}>
             <Id>{reply.nickname}</Id>
-            <Text>{reply.contents}</Text>
+            <Text dangerouslySetInnerHTML={{ __html: reply.contents }}></Text>
+            {/*<Text>{reply.contents}</Text>*/}
             <Detail>
               <DetailText>{reply.dt}</DetailText>
               <DetailText>답글달기</DetailText>
@@ -93,4 +94,5 @@ const Posting = styled.button`
   font-size: 1.3rem;
   color: #333;
   white-space: nowrap;
+  cursor: pointer;
 `;
