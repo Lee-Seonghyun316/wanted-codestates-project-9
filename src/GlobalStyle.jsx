@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import { bool } from 'prop-types';
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -62,6 +63,11 @@ button {
   border: none;
   background: none;
 }
-`;
+input {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+            :focus { outline: none; }
+}`;
 
 export default GlobalStyle;
