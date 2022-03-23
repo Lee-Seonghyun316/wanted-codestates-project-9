@@ -19,8 +19,11 @@ import {
 } from '../features/reviews/reviews';
 import { sortData } from '../data';
 import Modal from './common/Modal';
+import ReviewDetail from './ReviewDetail';
 
-const ReviewList = ({ setCurrent, setIndex }) => {
+const ReviewList = () => {
+  const [current, setCurrent] = useState('list');
+  const [index, setIndex] = useState(0);
   const [target, setTarget] = useState(null);
   const { page, reviews } = useSelector(
     (state) => ({ page: state.reviews.page, reviews: state.reviews.data }),
@@ -36,7 +39,6 @@ const ReviewList = ({ setCurrent, setIndex }) => {
     page: page,
     sort: sort === 'random' ? 'recent' : sort,
   });
-
   useEffect(() => {
     window.onbeforeunload = function pushRefresh() {
       window.scrollTo(0, 0);
@@ -62,6 +64,9 @@ const ReviewList = ({ setCurrent, setIndex }) => {
       loadingHandling();
     }
   }, [isLoading]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [current]);
   const loadingHandling = () => {
     setLoading(true);
     setTimeout(() => {
@@ -129,51 +134,60 @@ const ReviewList = ({ setCurrent, setIndex }) => {
   };
 
   return (
-    <Wrap modalVisible={sortModal}>
-      <Head />
-      <Filters>
-        <Filter text="정렬" type="main" onClick={handleClickSort} />
-        <Filter text="성별" type="main" />
-        <Filter text="인기 디자이너" />
-        <Filter text="카테고리" />
-      </Filters>
-      {sortModal && (
-        <Modal
-          closeModal={closeModal}
-          handleClickSortType={handleClickSortType}
-          handleApplyButton={handleApplyButton}
-          sort={sort}
-        />
+    <Wrap>
+      {current === 'list' && (
+        <ReviewListContainer modalVisible={sortModal}>
+          <Head />
+          <Filters>
+            <Filter text="정렬" type="main" onClick={handleClickSort} />
+            <Filter text="성별" type="main" />
+            <Filter text="인기 디자이너" />
+            <Filter text="카테고리" />
+          </Filters>
+          {sortModal && (
+            <Modal
+              closeModal={closeModal}
+              handleClickSortType={handleClickSortType}
+              handleApplyButton={handleApplyButton}
+              sort={sort}
+            />
+          )}
+          <Tags>
+            {searchTagName(sort)}
+            <Tag>전체</Tag>
+            <Refresh onClick={deleteTag}>
+              <FontAwesomeIcon icon={faArrowRotateRight} />
+            </Refresh>
+          </Tags>
+          {loading && (
+            <LoaderWrap>
+              <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />
+            </LoaderWrap>
+          )}
+          <ViewChoice>
+            <ChoiceButton selected={viewType === 'grid'} onClick={handleClickViewType} id="grid">
+              <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-01@2x.png" alt="gird" />
+            </ChoiceButton>
+            <ChoiceButton selected={viewType === 'list'} onClick={handleClickViewType} id="list">
+              <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
+            </ChoiceButton>
+          </ViewChoice>
+          {viewType === 'grid' ? <Grid handleClickDetail={handleClickDetail} /> : <List data={reviews} />}
+        </ReviewListContainer>
       )}
-      <Tags>
-        {searchTagName(sort)}
-        <Tag>전체</Tag>
-        <Refresh onClick={deleteTag}>
-          <FontAwesomeIcon icon={faArrowRotateRight} />
-        </Refresh>
-      </Tags>
-      {loading && (
-        <LoaderWrap>
-          <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />
-        </LoaderWrap>
-      )}
-      <ViewChoice>
-        <ChoiceButton selected={viewType === 'grid'} onClick={handleClickViewType} id="grid">
-          <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-01@2x.png" alt="gird" />
-        </ChoiceButton>
-        <ChoiceButton selected={viewType === 'list'} onClick={handleClickViewType} id="list">
-          <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
-        </ChoiceButton>
-      </ViewChoice>
-      {viewType === 'grid' ? <Grid handleClickDetail={handleClickDetail} /> : <List data={reviews} />}
-      <div ref={setTarget} />
+      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} isFetching={isFetching} />}
+      <InfiniteLoading ref={setTarget}>
+        {!loading && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
+      </InfiniteLoading>
     </Wrap>
   );
 };
 
 export default ReviewList;
 
-const Wrap = styled.div`
+const Wrap = styled.div``;
+
+const ReviewListContainer = styled.div`
   ${({ modalVisible }) => modalVisible && 'position:fixed;width:100%;height:100%;overflow:hidden;'};
 `;
 
@@ -246,4 +260,11 @@ const ChoiceButton = styled.button`
 
 const ViewChoiceImg = styled.img`
   width: 2rem;
+`;
+
+const InfiniteLoading = styled.div`
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

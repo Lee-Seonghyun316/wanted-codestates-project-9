@@ -1,16 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import ListItem from './common/ListItem';
 import { v4 as uuidv4 } from 'uuid';
 import Comments from './common/Comments';
 
-const ReviewDetail = ({ index, setCurrent }) => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+const ReviewDetail = ({ index, setCurrent, isFetching }) => {
   const reviews = useSelector((state) => state.reviews.data);
   const slicedReviews = reviews.slice(index);
+  useEffect(() => {
+    const scroll = window.scrollY;
+    if (isFetching) {
+      document.body.style.cssText = `
+      position: fixed;
+      top: -${window.scrollY}px;
+      overflow-y: scroll;
+      width: 100%;`;
+    }
+    return () => {
+      setTimeout(() => {
+        document.body.style.cssText = '';
+        window.scrollTo(0, scroll);
+      }, 2000);
+    };
+  }, [isFetching]);
   const handleClickBack = () => {
     setCurrent('list');
   };
