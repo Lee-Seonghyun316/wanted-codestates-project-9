@@ -21,7 +21,7 @@ const Comments = ({ id }) => {
       id: uuidv4(),
       depth: depth,
       contents: value,
-      dt: '지금',
+      registration_time: Date.now(),
     };
     depth === 0 && setComments((comments) => [...comments, newComment]);
     if (deepIndex !== null) {
@@ -30,7 +30,7 @@ const Comments = ({ id }) => {
         id: uuidv4(),
         depth: depth,
         contents: value,
-        dt: '지금',
+        registration_time: Date.now(),
         target_nickname: comments[deepIndex].nickname,
       };
       let newArray = [...comments];
@@ -60,7 +60,7 @@ const Comments = ({ id }) => {
         id: uuidv4(),
         depth: depth - 1,
         contents: value,
-        dt: '지금',
+        registration_time: Date.now(),
       };
       let newArray = [...comments];
       newArray.splice(deepIndex, 1, fixComment);
@@ -70,6 +70,23 @@ const Comments = ({ id }) => {
   };
   const handleDeleteComment = (id) => {
     setComments((comments) => comments.filter((comment) => comment.id !== id));
+  };
+  const makeTimeGap = (startTime) => {
+    const milliSeconds = Date.now() - startTime;
+    const minutes = milliSeconds / 60000;
+    const hours = minutes / 60;
+    const day = hours / 24;
+    const weeks = day / 7;
+    if (weeks >= 1) {
+      return `${parseInt(weeks)}주`;
+    }
+    if (day >= 1) {
+      return `${parseInt(day)}일`;
+    }
+    if (hours >= 1) {
+      return `${parseInt(hours)}시간`;
+    }
+    return minutes < 1 ? '지금' : `${parseInt(minutes)}분`;
   };
 
   return (
@@ -84,7 +101,7 @@ const Comments = ({ id }) => {
               {/*<Text>{reply.contents}</Text>*/}
             </MainInfo>
             <DetailContainer>
-              <Detail>{reply.dt}</Detail>
+              <Detail>{reply.dt ? reply.dt : makeTimeGap(reply.registration_time)}</Detail>
               {deepIndex !== index ? (
                 <Detail onClick={() => handleClickDeepComment(index)}>답글달기</Detail>
               ) : (
