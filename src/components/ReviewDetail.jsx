@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import List from './common/List';
 import { useSelector } from 'react-redux';
+import ListItem from './common/ListItem';
+import { v4 as uuidv4 } from 'uuid';
 
 const ReviewDetail = ({ index, setCurrent }) => {
   useEffect(() => {
@@ -12,6 +13,7 @@ const ReviewDetail = ({ index, setCurrent }) => {
   const handleClickBack = () => {
     setCurrent('list');
   };
+  console.log(slicedReviews[0].id);
 
   return (
     <div>
@@ -24,7 +26,23 @@ const ReviewDetail = ({ index, setCurrent }) => {
           <ButtonImg src="https://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_can_btn.png" alt="x" />
         </button>
       </Head>
-      <List data={slicedReviews} />
+      <section>
+        {slicedReviews.map((review) => (
+          <div>
+            <ListItem review={review} key={uuidv4()} />
+            <Comments>
+              <Comment>
+                <Id>admin</Id>
+                <Text>금주의 베스트 리뷰로 선정되어 상품권 10,000원이 발급 되었습니다!</Text>
+                <Detail>
+                  <DetailText>55주</DetailText>
+                  <DetailText>답글달기</DetailText>
+                </Detail>
+              </Comment>
+            </Comments>
+          </div>
+        ))}
+      </section>
     </div>
   );
 };
@@ -55,4 +73,37 @@ const Head = styled.header`
 const ButtonImg = styled.img`
   width: 1.5rem;
   margin: 0.3rem 1.6rem 0;
+`;
+
+const Comments = styled.div`
+  display: flex;
+  gap: 1.2rem;
+  padding: 1.2rem 1.6rem;
+  background: #f9f9f9;
+`;
+
+const Comment = styled.div`
+  font-size: 1.2rem;
+  font-weight: normal;
+  line-height: 1.5;
+`;
+
+const Id = styled.h1`
+  font-size: 1.3rem;
+  font-weight: bold;
+  letter-spacing: -0.025rem;
+  margin-right: 0.6rem;
+`;
+
+const Text = styled.p``;
+
+const Detail = styled.div`
+  font-size: 1rem;
+  margin-top: 0.4rem;
+  display: flex;
+`;
+
+const DetailText = styled.p`
+  color: #999;
+  margin-right: 1.7rem;
 `;
