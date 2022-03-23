@@ -68,6 +68,9 @@ const Comments = ({ id }) => {
     }
     handleClickCancelFixed();
   };
+  const handleDeleteComment = (id) => {
+    setComments((comments) => comments.filter((comment) => comment.id !== id));
+  };
 
   return (
     <Wrap>
@@ -92,6 +95,7 @@ const Comments = ({ id }) => {
               ) : (
                 <Detail onClick={handleClickCancelFixed}>수정취소</Detail>
               )}
+              {NICKNAME === reply.nickname && <Detail onClick={() => handleDeleteComment(reply.id)}>삭제</Detail>}
             </DetailContainer>
             {deepIndex === index && (
               <CommentForm
