@@ -9,17 +9,31 @@ const NICKNAME = 'FEDeveloper';
 const Comments = ({ id }) => {
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReplyQuery(id);
   const [comments, setComments] = useState([]);
-  const [deppIndex, setDeepIndex] = useState(null);
+  const [deepIndex, setDeepIndex] = useState(null);
   useEffect(() => {
     setComments(data);
   }, [data]);
   const newComment = (e, depth, value) => {
     e.preventDefault();
-    const newComment = { nickname: NICKNAME, id: uuidv4(), depth: depth, contents: value, dt: '지금' };
+    const newComment = {
+      nickname: NICKNAME,
+      id: uuidv4(),
+      depth: depth,
+      contents: value,
+      dt: '지금',
+    };
     depth === 0 && setComments((comments) => [...comments, newComment]);
-    if (deppIndex !== null) {
+    if (deepIndex !== null) {
+      const newComment = {
+        nickname: NICKNAME,
+        id: uuidv4(),
+        depth: depth,
+        contents: value,
+        dt: '지금',
+        target_nickname: comments[deepIndex].nickname,
+      };
       let newArray = [...comments];
-      newArray.splice(deppIndex + 1, 0, newComment);
+      newArray.splice(deepIndex + 1, 0, newComment);
       console.log(newArray);
       setComments([...newArray]);
     }
@@ -36,27 +50,26 @@ const Comments = ({ id }) => {
       {comments &&
         comments.map((reply, index) => (
           <Comment id={reply.id} key={uuidv4()} depth={reply.depth}>
-            <Id>{reply.nickname}</Id>
-            <Text dangerouslySetInnerHTML={{ __html: reply.contents }}></Text>
-            {/*<Text>{reply.contents}</Text>*/}
+            <MainInfo>
+              <Id me={NICKNAME === reply.nickname}>{reply.nickname}</Id>
+              {reply.target_nickname && <Id>@{reply.target_nickname}</Id>}
+              <Text dangerouslySetInnerHTML={{ __html: reply.contents }} />
+              {/*<Text>{reply.contents}</Text>*/}
+            </MainInfo>
             <DetailContainer>
               <Detail>{reply.dt}</Detail>
-              {deppIndex !== index ? (
+              {deepIndex !== index ? (
                 <Detail onClick={() => handleClickDeepComment(index)}>답글달기</Detail>
               ) : (
                 <Detail onClick={handleClickCancelComment}>답글취소</Detail>
               )}
             </DetailContainer>
-            {deppIndex === index && (
-              <CommentForm
-                newComment={newComment}
-                placeholder={`${NICKNAME} (으)로 답글 달기`}
-                depth={reply.depth + 1}
-              />
+            {deepIndex === index && (
+              <CommentForm newComment={newComment} placeholder={`${NICKNAME} (으)로 답글`} depth={reply.depth + 1} />
             )}
           </Comment>
         ))}
-      {deppIndex === null && <CommentForm newComment={newComment} placeholder="댓글 달기" depth={0} />}
+      {deepIndex === null && <CommentForm newComment={newComment} placeholder="댓글 달기" depth={0} />}
     </Wrap>
   );
 };
@@ -78,11 +91,17 @@ const Comment = styled.div`
   ${({ depth }) => `margin-left: ${depth * 3}rem`}
 `;
 
+const MainInfo = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
 const Id = styled.h1`
   font-size: 1.3rem;
   font-weight: bold;
   letter-spacing: -0.025rem;
   margin-right: 0.6rem;
+  ${({ me }) => me && 'color: #be9162'}
 `;
 
 const Text = styled.p``;
