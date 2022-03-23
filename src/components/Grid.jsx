@@ -7,9 +7,14 @@ const Grid = ({ handleClickDetail }) => {
 
   return (
     <Wrap>
-      <GridItems onClick={handleClickDetail}>
-        {data.map((data) => (
-          <Img src={`https://i.balaan.io/review/${data.img[0]}`} alt="reviewImg" key={data.id} />
+      <GridItems>
+        {data.map((data, index) => (
+          <Img
+            src={`https://i.balaan.io/review/${data.img[0]}`}
+            alt="reviewImg"
+            key={data.id}
+            onClick={() => handleClickDetail(index)}
+          />
         ))}
       </GridItems>
     </Wrap>

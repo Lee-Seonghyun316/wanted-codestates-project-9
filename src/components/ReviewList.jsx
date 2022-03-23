@@ -20,7 +20,7 @@ import {
 import { sortData } from '../data';
 import Modal from './common/Modal';
 
-const ReviewList = ({ setCurrent }) => {
+const ReviewList = ({ setCurrent, setIndex }) => {
   const [target, setTarget] = useState(null);
   const { page, reviews } = useSelector(
     (state) => ({ page: state.reviews.page, reviews: state.reviews.data }),
@@ -43,6 +43,7 @@ const ReviewList = ({ setCurrent }) => {
     };
   }, []);
   useEffect(() => {
+    console.log(target);
     let observer;
     if (target) {
       observer = new IntersectionObserver(onIntersect, {
@@ -123,8 +124,9 @@ const ReviewList = ({ setCurrent }) => {
   const handleClickSort = () => {
     sortModalVisible(true);
   };
-  const handleClickDetail = () => {
+  const handleClickDetail = (index) => {
     setCurrent('detail');
+    setIndex(index);
   };
 
   return (

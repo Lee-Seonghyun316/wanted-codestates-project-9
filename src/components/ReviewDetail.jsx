@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import List from './common/List';
+import { useSelector } from 'react-redux';
 
-const ReviewDetail = () => {
+const ReviewDetail = (index) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  const data = useSelector((state) => state.reviews.data);
+  const slicedReviews = data.slice(index.index);
+
   return (
     <div>
       <Head>
@@ -13,6 +21,7 @@ const ReviewDetail = () => {
           <ButtonImg src="https://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_can_btn.png" alt="left" />
         </button>
       </Head>
+      <List data={slicedReviews} />
     </div>
   );
 };
