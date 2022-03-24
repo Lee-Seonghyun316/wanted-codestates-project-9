@@ -31,7 +31,6 @@ const ReviewList = () => {
     shallowEqual
   );
   const [loading, setLoading] = useState(false);
-  const [throttle, setThrottle] = useState(false);
   const [viewType, setViewType] = useState('grid');
   const [sort, setSort] = useState('recent');
   const [sortModal, setSortModal] = useState(false);
@@ -76,15 +75,8 @@ const ReviewList = () => {
     }, 1500);
   };
   const onIntersect = async ([entry], observer) => {
-    console.log('무한스크롤');
     if (entry.isIntersecting) {
-      if (!throttle) {
-        setThrottle(true);
-        setTimeout(async () => {
-          await dispatch(incrementPage());
-          setThrottle(false);
-        }, 300);
-      }
+      await dispatch(incrementPage());
     }
   };
   const handleClickViewType = (e) => {
@@ -138,14 +130,6 @@ const ReviewList = () => {
 
   return (
     <Wrap>
-      <button
-        onClick={() => {
-          setShareModal(true);
-        }}
-        style={{ position: 'sticky', top: 0, zIndex: 9999 }}
-      >
-        모달테스트
-      </button>
       {current === 'list' && (
         <ReviewListContainer modalVisible={sortModal}>
           <Head />
@@ -188,15 +172,17 @@ const ReviewList = () => {
           ) : (
             <List data={reviews} setShareModal={setShareModal} />
           )}
+          <InfiniteLoading ref={setTarget}>
+            {!loading && isFetching && !sortModal && (
+              <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />
+            )}
+          </InfiniteLoading>
         </ReviewListContainer>
       )}
       {current === 'detail' && (
         <ReviewDetail setCurrent={setCurrent} index={index} isFetching={isFetching} setShareModal={setShareModal} />
       )}
       {shareModal && <ShareModal setShareModal={setShareModal} />}
-      <InfiniteLoading ref={setTarget}>
-        {!loading && isFetching && !sortModal && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
-      </InfiniteLoading>
     </Wrap>
   );
 };

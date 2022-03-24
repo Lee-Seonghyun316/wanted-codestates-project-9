@@ -32,7 +32,6 @@ const ListItem = ({ review, setShareModal }) => {
     setLike(!like);
   };
   const handleClickShare = () => {
-    console.log('링크복사');
     setShareModal(true);
   };
 

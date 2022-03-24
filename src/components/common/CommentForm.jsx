@@ -6,7 +6,7 @@ const CommentForm = ({ newComment, placeholder, depth, fixedInput, fixComment })
   const inputRef = useRef(null);
   useEffect(() => {
     fixedInput && setInput(fixedInput);
-    inputRef.current.focus();
+    fixedInput && inputRef.current.focus();
   }, [fixedInput]);
   const handleChange = (e) => {
     setInput(e.target.value);

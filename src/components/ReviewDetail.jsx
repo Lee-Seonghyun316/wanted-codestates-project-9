@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import ListItem from './common/ListItem';
@@ -8,26 +8,6 @@ import Comments from './common/Comments';
 const ReviewDetail = ({ index, setCurrent, isFetching, setShareModal }) => {
   const reviews = useSelector((state) => state.reviews.data);
   const slicedReviews = reviews.slice(index);
-  useEffect(() => {
-    console.log('재랜더링');
-    console.log(index, isFetching);
-  }, [index, setCurrent, isFetching, setShareModal]);
-  useEffect(() => {
-    const scroll = window.scrollY;
-    if (isFetching) {
-      document.body.style.cssText = `
-      position: fixed;
-      top: -${window.scrollY}px;
-      overflow-y: scroll;
-      width: 100%;`;
-    }
-    return () => {
-      setTimeout(() => {
-        document.body.style.cssText = '';
-        window.scrollTo(0, scroll);
-      }, 2000);
-    };
-  }, [isFetching]);
   const handleClickBack = () => {
     setCurrent('list');
   };
@@ -65,7 +45,7 @@ const Head = styled.header`
   box-shadow: 0 0px 3px 0px #ccc;
   width: 100%;
   background: #fff;
-  z-index: 999;
+  z-index: 8;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
