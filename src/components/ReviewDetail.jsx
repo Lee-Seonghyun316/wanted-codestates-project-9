@@ -1,26 +1,55 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import ListItem from './common/ListItem';
 import { v4 as uuidv4 } from 'uuid';
 import Comments from './common/Comments';
 import ShareModal from './common/ShareModal';
 import { useSearchParams } from 'react-router-dom';
 import { useGetCertainReviewsQuery } from '../features/reviews/fetchReviews';
+import ReactLoading from 'react-loading';
+import { addData, addQueryData, addRandomData, incrementQueryPage } from '../features/reviews/reviews';
 
 const ReviewDetail = ({ index, setCurrent }) => {
-  const queryPage = useSelector((state) => state.reviews.queryPage);
-  //index 쿼리에 있으면 그거 쓰게!
+  const { queryPage, queryData, reviews } = useSelector(
+    (state) => ({
+      queryPage: state.reviews.queryPage,
+      reviews: state.reviews.data,
+      queryData: state.reviews.queryData,
+    }),
+    shallowEqual
+  );
   let [params] = useSearchParams();
   let reviewId = params.get('review-id');
-  console.log(reviewId);
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetCertainReviewsQuery({
     page: queryPage,
     reviewId: reviewId,
   });
   const [shareModal, setShareModal] = useState(false);
-  const reviews = useSelector((state) => state.reviews.data);
-  const slicedReviews = data ? data.data : reviews.slice(index);
+  const slicedReviews = queryData ? queryData : reviews.slice(index);
+  const [target, setTarget] = useState(null);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    let observer;
+    if (target) {
+      observer = new IntersectionObserver(onIntersect, {
+        threshold: 0.2,
+      });
+      observer.observe(target);
+    }
+    return () => observer && observer.disconnect();
+  }, [target]);
+  useEffect(() => {
+    if (data) {
+      console.log(data.data);
+      dispatch(addQueryData(data.data));
+    }
+  }, [data]);
+  const onIntersect = async ([entry], observer) => {
+    if (entry.isIntersecting) {
+      await dispatch(incrementQueryPage());
+    }
+  };
   const handleClickBack = () => {
     setCurrent && setCurrent('list');
     //없을 때는 링크 이동
@@ -45,6 +74,9 @@ const ReviewDetail = ({ index, setCurrent }) => {
           </div>
         ))}
       </section>
+      <InfiniteLoading ref={setTarget}>
+        {isFetching && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
+      </InfiniteLoading>
       {shareModal && <ShareModal setShareModal={setShareModal} />}
     </div>
   );
@@ -76,4 +108,11 @@ const Head = styled.header`
 const ButtonImg = styled.img`
   width: 1.5rem;
   margin: 0.3rem 1.6rem 0;
+`;
+
+const InfiniteLoading = styled.div`
+  padding: 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

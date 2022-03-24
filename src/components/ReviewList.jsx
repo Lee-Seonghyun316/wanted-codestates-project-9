@@ -263,7 +263,7 @@ const ViewChoiceImg = styled.img`
 `;
 
 const InfiniteLoading = styled.div`
-  padding: 2rem;
+  padding: 2rem 0;
   display: flex;
   align-items: center;
   justify-content: center;

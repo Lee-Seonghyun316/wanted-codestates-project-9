@@ -2,8 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   page: 1,
-  queryPage: 1,
+  queryPage: 0,
   data: [],
+  queryData: [],
 };
 
 function shuffle(array) {
@@ -21,6 +22,9 @@ export const reviewSlice = createSlice({
   reducers: {
     addData: (state, action) => {
       state.data = [...state.data, ...action.payload];
+    },
+    addQueryData: (state, action) => {
+      state.queryData = [...state.queryData, ...action.payload];
     },
     deleteData: (state) => {
       state.data = [];
@@ -46,12 +50,13 @@ export const reviewSlice = createSlice({
 
 export const {
   addData,
+  addQueryData,
   incrementPage,
+  incrementQueryPage,
   randomSort,
   addRandomData,
   deleteData,
   pageInitialize,
-  incrementQueryPage,
 } = reviewSlice.actions;
 
 export default reviewSlice.reducer;
