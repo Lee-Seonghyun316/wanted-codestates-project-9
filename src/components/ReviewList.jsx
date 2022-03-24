@@ -177,7 +177,7 @@ const ReviewList = () => {
       )}
       {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} isFetching={isFetching} />}
       <InfiniteLoading ref={setTarget}>
-        {!loading && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
+        {!loading && isFetching && !sortModal && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
       </InfiniteLoading>
     </Wrap>
   );

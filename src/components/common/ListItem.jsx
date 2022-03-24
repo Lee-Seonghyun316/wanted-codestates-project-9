@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import styled, { css } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
 const ListItem = ({ review }) => {
+  const [like, setLike] = useState(false);
   const renderStar = (point) => {
     const pointArr = [];
     for (let i = 0; i < point; i++) {
@@ -27,6 +28,12 @@ const ListItem = ({ review }) => {
       </Questions>
     );
   };
+  const handleClickLike = () => {
+    setLike(!like);
+  };
+  const handleClickShare = () => {
+    console.log('링크복사');
+  };
 
   return (
     <div key={review.id}>
@@ -40,13 +47,13 @@ const ListItem = ({ review }) => {
       <ListImg src={`https://i.balaan.io/review/${review?.img[0]}`} />
       <Activities>
         <ActivitySet>
-          <Expression like={false}>
+          <Expression>
             <FontAwesomeIcon icon={faThumbsUp} />
           </Expression>
-          <Activity src="https://static.balaan.co.kr/mobile/img/view/share.png?v=2" />
+          <Activity src="https://static.balaan.co.kr/mobile/img/view/share.png?v=2" onClick={handleClickShare} />
         </ActivitySet>
-        <Expression like={false}>
-          <FontAwesomeIcon icon={faHeart} />
+        <Expression like={like}>
+          <FontAwesomeIcon icon={faHeart} onClick={handleClickLike} />
         </Expression>
       </Activities>
       <StarCore>{renderStar(review?.point)}</StarCore>
@@ -104,7 +111,8 @@ const Activity = styled.button`
 
 const Expression = styled.div`
   font-size: 2rem;
-  color: ${({ like, theme }) => (like ? theme.color.black : '#C8CAC7')};
+  color: ${({ like, theme }) => (like ? '#DB4545' : '#E5E5E5')};
+  cursor: pointer;
 `;
 
 const StarCore = styled.div`
