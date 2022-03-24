@@ -32,6 +32,10 @@ const color = {
 };
 
 const common = {
+  flexColumn: `
+    display: flex;
+    flex-direction: column;
+  `,
   flexCenter: `
     display: flex;
     justify-content: center;
@@ -53,11 +57,16 @@ const common = {
   `,
 };
 
+const usefulUnit = {
+  basic: '1.2rem',
+};
+
 const theme = {
   fontSize,
   color,
   common,
   device,
+  usefulUnit,
 };
 
 export default theme;
