@@ -13,7 +13,7 @@ export const reviewsApi = createApi({
     }),
     getCertainReviews: builder.query({
       query: (query) =>
-        `?size=3&from=1&page=${query.page}&sort=reply&gender=unisex&brandno=&hashtags=&category=&id=${query.reviewId}&goodsno=&type=&m_no=&shop_id=undefined`,
+        `?size=3&from=1&page=${query.page}&sort=${query.sort}&gender=unisex&brandno=&hashtags=&category=&id=${query.reviewId}&goodsno=&type=&m_no=&shop_id=undefined`,
       keepUnusedDataFor: 5,
     }),
   }),

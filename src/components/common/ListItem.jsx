@@ -4,7 +4,7 @@ import { faHeart, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import styled, { css } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
-const ListItem = ({ review, setShareModal }) => {
+const ListItem = ({ review, setShareModal, setCopyId }) => {
   const [like, setLike] = useState(false);
   const renderStar = (point) => {
     const pointArr = [];
@@ -31,8 +31,9 @@ const ListItem = ({ review, setShareModal }) => {
   const handleClickLike = () => {
     setLike(!like);
   };
-  const handleClickShare = () => {
+  const handleClickShare = (id) => {
     setShareModal(true);
+    setCopyId(id);
   };
 
   return (
@@ -50,7 +51,10 @@ const ListItem = ({ review, setShareModal }) => {
           <Expression>
             <FontAwesomeIcon icon={faThumbsUp} />
           </Expression>
-          <Activity src="https://static.balaan.co.kr/mobile/img/view/share.png?v=2" onClick={handleClickShare} />
+          <Activity
+            src="https://static.balaan.co.kr/mobile/img/view/share.png?v=2"
+            onClick={() => handleClickShare(review.id)}
+          />
         </ActivitySet>
         <Expression like={like}>
           <FontAwesomeIcon icon={faHeart} onClick={handleClickLike} />

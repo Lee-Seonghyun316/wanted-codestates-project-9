@@ -8,11 +8,13 @@ import ListItem from './common/ListItem';
 import Comments from './common/Comments';
 import ShareModal from './common/ShareModal';
 import { useGetCertainReviewsQuery } from '../features/reviews/fetchReviews';
-import { addQueryData, incrementQueryPage } from '../features/reviews/reviews';
+import { addQueryData, deleteQueryData, incrementQueryPage, queryPageInitialize } from '../features/reviews/reviews';
 
-const ReviewDetail = ({ index, setCurrent }) => {
-  let [params] = useSearchParams();
-  let reviewId = params.get('review-id');
+const ReviewDetail = ({ index, setCurrent, currentSort }) => {
+  const [copyId, setCopyId] = useState();
+  const [params] = useSearchParams();
+  const reviewId = params.get('review-id');
+  const sort = params.get('sort');
   const { queryPage, queryData, reviews } = useSelector(
     (state) => ({
       queryPage: state.reviews.queryPage,
@@ -24,8 +26,9 @@ const ReviewDetail = ({ index, setCurrent }) => {
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetCertainReviewsQuery({
     page: queryPage,
     reviewId: reviewId,
+    sort: sort,
   });
-  const slicedReviews = queryData ? queryData : reviews.slice(index);
+  const slicedReviews = queryData.length > 0 ? queryData : reviews.slice(index);
   const [shareModal, setShareModal] = useState(false);
   const [target, setTarget] = useState(null);
   useEffect(() => {
@@ -50,12 +53,18 @@ const ReviewDetail = ({ index, setCurrent }) => {
     }
   };
   const navigate = useNavigate();
-  const handleClickBack = () => {
-    setCurrent ? setCurrent('list') : navigate('/');
+  const handleClickBack = async () => {
+    if (setCurrent) {
+      setCurrent('list');
+    } else {
+      await dispatch(deleteQueryData());
+      await dispatch(queryPageInitialize());
+      navigate('/');
+    }
   };
 
   return (
-    <div>
+    <Wrap shareModal={shareModal}>
       <Head>
         <button onClick={handleClickBack}>
           <ButtonImg src="http://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_left_btn.png" alt="back" />
@@ -68,7 +77,7 @@ const ReviewDetail = ({ index, setCurrent }) => {
       <section>
         {slicedReviews.map((review) => (
           <div key={uuidv4()}>
-            <ListItem review={review} key={uuidv4()} setShareModal={setShareModal} />
+            <ListItem review={review} key={uuidv4()} setShareModal={setShareModal} setCopyId={setCopyId} />
             <Comments id={review.id} key={uuidv4()} />
           </div>
         ))}
@@ -76,12 +85,14 @@ const ReviewDetail = ({ index, setCurrent }) => {
       <InfiniteLoading ref={setTarget}>
         {isFetching && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
       </InfiniteLoading>
-      {shareModal && <ShareModal setShareModal={setShareModal} />}
-    </div>
+      {shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} sort={currentSort} />}
+    </Wrap>
   );
 };
 
 export default ReviewDetail;
+
+const Wrap = styled.div``;
 
 const Head = styled.header`
   position: fixed;

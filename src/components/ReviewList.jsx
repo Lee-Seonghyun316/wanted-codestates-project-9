@@ -23,6 +23,7 @@ import ReviewDetail from './ReviewDetail';
 import ShareModal from './common/ShareModal';
 
 const ReviewList = () => {
+  const [copyId, setCopyId] = useState(null);
   const [current, setCurrent] = useState('list');
   const [index, setIndex] = useState(0);
   const [target, setTarget] = useState(null);
@@ -170,15 +171,15 @@ const ReviewList = () => {
           {viewType === 'grid' ? (
             <Grid handleClickDetail={handleClickDetail} />
           ) : (
-            <List data={reviews} setShareModal={setShareModal} />
+            <List data={reviews} setShareModal={setShareModal} setCopyId={setCopyId} />
           )}
           <InfiniteLoading ref={setTarget}>
             {!loading && isFetching && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
           </InfiniteLoading>
-          {shareModal && <ShareModal setShareModal={setShareModal} />}
+          {shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} sort={sort} />}
         </ReviewListContainer>
       )}
-      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} />}
+      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} currentSort={sort} />}
     </Wrap>
   );
 };

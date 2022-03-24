@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import BlackOut from './BlackOut';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-const ShareModal = ({ setShareModal }) => {
+const ROOT_URL = 'http://localhost:3000/';
+
+const ShareModal = ({ setShareModal, reviewId, sort }) => {
   const [copy, setCopy] = useState(false);
   const handleClick = () => {
     setCopy(true);
@@ -11,31 +13,40 @@ const ShareModal = ({ setShareModal }) => {
       setCopy(false);
     }, 1500);
   };
+  const filteringSort = sort ? sort : 'recent';
+  const shareUrl = `${ROOT_URL}detail?review-id=${reviewId}&sort=${filteringSort}`;
   return (
-    <>
-      <BlackOut top={window.scrollY} closeModal={() => setShareModal(false)} />
-      <Content onClick={() => setShareModal(false)} top={window.scrollY}>
-        {copy && <Message>링크 복사 완료:)</Message>}
+    <Wrap top={window.scrollY}>
+      {copy && <Message>링크 복사 완료:)</Message>}
+      <BlackOut closeModal={() => setShareModal(false)} />
+      <Content>
         {/*<Img src="https://static.balaan.co.kr/mobile/img/share/btn_share_kt.png" alt="kakao" />*/}
-        <CopyToClipboard text="http://localhost:3000/">
+        <CopyToClipboard text={shareUrl}>
           <button onClick={handleClick}>
             <Img src="https://static.balaan.co.kr/mobile/img/share/btn_share_url.png" alt="url" />
           </button>
         </CopyToClipboard>
       </Content>
-    </>
+    </Wrap>
   );
 };
 
 export default ShareModal;
 
-const Content = styled.div`
+const Wrap = styled.div`
   position: absolute;
-  z-index: 10;
   top: ${({ top }) => top}px;
   left: 0;
   height: 100%;
   width: 100%;
+`;
+
+const Content = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
