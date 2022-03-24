@@ -4,12 +4,12 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import ReactLoading from 'react-loading';
-import ListItem from './common/ListItem';
-import Comments from './common/Comments';
-import ShareModal from './common/ShareModal';
-import { useGetCertainReviewsQuery } from '../features/reviews/fetchReviews';
-import { addQueryData, deleteQueryData, incrementQueryPage, queryPageInitialize } from '../features/reviews/reviews';
-import { useStopScroll } from '../features/useStopScroll';
+import ListItem from '../components/common/ListItem';
+import Comments from '../components/common/Comments';
+import ShareModal from '../components/common/ShareModal';
+import { useGetCertainReviewsQuery } from '../redux/fetchReviews';
+import { addQueryData, deleteQueryData, incrementQueryPage, queryPageInitialize } from '../redux/reviews';
+import { useStopScroll } from '../redux/useStopScroll';
 
 const ReviewDetail = ({ index, setCurrent, currentSort }) => {
   const [copyId, setCopyId] = useState();

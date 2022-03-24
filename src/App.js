@@ -2,16 +2,16 @@ import React from 'react';
 import GlobalStyle from './GlobalStyle';
 import { ThemeProvider } from 'styled-components';
 import theme from './theme';
-import ReviewScreens from './components/ReviewScreens';
 import { Routes, Route } from 'react-router-dom';
-import ReviewDetail from './components/ReviewDetail';
+import ReviewDetail from './pages/ReviewDetail';
+import ReviewList from './pages/ReviewList';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <Routes>
-        <Route path="/" element={<ReviewScreens />} />
+        <Route path="/" element={<ReviewList />} />
         <Route path="/detail" element={<ReviewDetail />} />
       </Routes>
     </ThemeProvider>

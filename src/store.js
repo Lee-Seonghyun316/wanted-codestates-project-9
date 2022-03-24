@@ -1,8 +1,8 @@
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { configureStore } from '@reduxjs/toolkit';
-import reviewReducer from './features/reviews/reviews';
-import { replyApi } from './features/reviews/fetchReply';
-import { reviewsApi } from './features/reviews/fetchReviews';
+import reviewReducer from './redux/reviews';
+import { replyApi } from './redux/fetchReply';
+import { reviewsApi } from './redux/fetchReviews';
 
 export const store = configureStore({
   reducer: {

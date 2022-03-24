@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useGetReplyQuery } from '../../features/reviews/fetchReply';
+import { useGetReplyQuery } from '../../redux/fetchReply';
 import { v4 as uuidv4 } from 'uuid';
 import CommentForm from './CommentForm';
 

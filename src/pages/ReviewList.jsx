@@ -3,12 +3,12 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useGetReviewsQuery } from '../features/reviews/fetchReviews';
+import { useGetReviewsQuery } from '../redux/fetchReviews';
 import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
-import Head from './common/Head';
-import Filter from './common/Filter';
-import Grid from './Grid';
-import List from './common/List';
+import Head from '../components/common/Head';
+import Filter from '../components/common/Filter';
+import Grid from '../components/Grid';
+import List from '../components/common/List';
 import {
   addData,
   addRandomData,
@@ -16,12 +16,12 @@ import {
   incrementPage,
   pageInitialize,
   randomSort,
-} from '../features/reviews/reviews';
+} from '../redux/reviews';
 import { sortData } from '../data';
-import SortModal from './common/SortModal';
+import SortModal from '../components/common/SortModal';
 import ReviewDetail from './ReviewDetail';
-import ShareModal from './common/ShareModal';
-import { useStopScroll } from '../features/useStopScroll';
+import ShareModal from '../components/common/ShareModal';
+import { useStopScroll } from '../redux/useStopScroll';
 
 const ReviewList = () => {
   const [copyId, setCopyId] = useState(null);
