@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import ShareModal from '../components/common/ShareModal';
 import { useGetCertainReviewsQuery } from '../redux/fetchReviews';
 import { addQueryData, deleteQueryData, incrementQueryPage, queryPageInitialize } from '../redux/reviews';
 import { useStopScroll } from '../hooks/useStopScroll';
+import SubHeader from '../components/common/SubHeader';
 
 const ReviewDetail = ({ index, setCurrent, currentSort }) => {
   const [copyId, setCopyId] = useState();
@@ -66,60 +67,33 @@ const ReviewDetail = ({ index, setCurrent, currentSort }) => {
   useStopScroll(shareModal);
 
   return (
-    <Wrap shareModal={shareModal}>
-      <Head>
-        <button onClick={handleClickBack}>
-          <ButtonImg src="http://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_left_btn.png" alt="back" />
-        </button>
-        리뷰 상세보기
-        <button onClick={handleClickBack}>
-          <ButtonImg src="https://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_can_btn.png" alt="x" />
-        </button>
-      </Head>
-      <section>
+    <React.Fragment>
+      <SubHeader title="리뷰 상세보기" onClick={handleClickBack} />
+      <List>
         {slicedReviews.map((review) => (
-          <div key={uuidv4()}>
+          <Content key={uuidv4()}>
             <ListItem review={review} key={uuidv4()} setShareModal={setShareModal} setCopyId={setCopyId} />
             <Comments id={review.id} key={uuidv4()} />
-          </div>
+          </Content>
         ))}
-      </section>
+      </List>
       <InfiniteLoading ref={setTarget}>
         {isFetching && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
       </InfiniteLoading>
       {shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} sort={currentSort} />}
-    </Wrap>
+    </React.Fragment>
   );
 };
 
 export default ReviewDetail;
 
-const Wrap = styled.div``;
-
-const Head = styled.header`
-  position: fixed;
-  text-align: center;
-  padding: 1.4rem 0;
-  top: 0;
-  box-shadow: 0 0px 3px 0px #ccc;
-  width: 100%;
-  background: #fff;
-  z-index: 8;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  font-family: Lato;
-  color: #020202;
-  letter-spacing: 0.031rem;
-  font-size: 1.4rem;
-  font-weight: 700;
-  white-space: nowrap;
+const List = styled.section`
+  padding-top: 6rem;
+  background-color: ${({ theme }) => theme.color.lightGrey};
 `;
 
-const ButtonImg = styled.img`
-  width: 1.5rem;
-  margin: 0.3rem 1.6rem 0;
+const Content = styled.div`
+  background-color: white;
 `;
 
 const InfiniteLoading = styled.div`
@@ -127,4 +101,5 @@ const InfiniteLoading = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: white;
 `;

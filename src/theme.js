@@ -58,7 +58,9 @@ const common = {
 };
 
 const usefulUnit = {
+  small: '1rem',
   basic: '1.2rem',
+  middle: '2rem',
 };
 
 const theme = {

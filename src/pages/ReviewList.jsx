@@ -5,7 +5,7 @@ import ReactLoading from 'react-loading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useGetReviewsQuery } from '../redux/fetchReviews';
 import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
-import Head from '../components/common/Head';
+import Head from '../components/common/MainHeader';
 import Filter from '../components/common/Filter';
 import Grid from '../components/Grid';
 import List from '../components/common/List';
