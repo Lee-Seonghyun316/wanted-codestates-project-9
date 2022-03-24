@@ -4,7 +4,7 @@ import { faHeart, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import styled, { css } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
-const ListItem = ({ review }) => {
+const ListItem = ({ review, setShareModal }) => {
   const [like, setLike] = useState(false);
   const renderStar = (point) => {
     const pointArr = [];
@@ -33,6 +33,7 @@ const ListItem = ({ review }) => {
   };
   const handleClickShare = () => {
     console.log('링크복사');
+    setShareModal(true);
   };
 
   return (

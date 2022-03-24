@@ -18,8 +18,9 @@ import {
   randomSort,
 } from '../features/reviews/reviews';
 import { sortData } from '../data';
-import Modal from './common/Modal';
+import SortModal from './common/SortModal';
 import ReviewDetail from './ReviewDetail';
+import ShareModal from './common/ShareModal';
 
 const ReviewList = () => {
   const [current, setCurrent] = useState('list');
@@ -33,7 +34,8 @@ const ReviewList = () => {
   const [throttle, setThrottle] = useState(false);
   const [viewType, setViewType] = useState('grid');
   const [sort, setSort] = useState('recent');
-  const [sortModal, sortModalVisible] = useState(false);
+  const [sortModal, setSortModal] = useState(false);
+  const [shareModal, setShareModal] = useState(false);
   const dispatch = useDispatch();
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReviewsQuery({
     page: page,
@@ -74,6 +76,7 @@ const ReviewList = () => {
     }, 1500);
   };
   const onIntersect = async ([entry], observer) => {
+    console.log('무한스크롤');
     if (entry.isIntersecting) {
       if (!throttle) {
         setThrottle(true);
@@ -119,14 +122,14 @@ const ReviewList = () => {
     );
   };
   const closeModal = () => {
-    sortModalVisible(false);
+    setSortModal(false);
   };
   const handleApplyButton = () => {
     closeModal();
     loadingHandling();
   };
   const handleClickSort = () => {
-    sortModalVisible(true);
+    setSortModal(true);
   };
   const handleClickDetail = (index) => {
     setCurrent('detail');
@@ -135,6 +138,14 @@ const ReviewList = () => {
 
   return (
     <Wrap>
+      <button
+        onClick={() => {
+          setShareModal(true);
+        }}
+        style={{ position: 'sticky', top: 0, zIndex: 9999 }}
+      >
+        모달테스트
+      </button>
       {current === 'list' && (
         <ReviewListContainer modalVisible={sortModal}>
           <Head />
@@ -145,7 +156,7 @@ const ReviewList = () => {
             <Filter text="카테고리" />
           </Filters>
           {sortModal && (
-            <Modal
+            <SortModal
               closeModal={closeModal}
               handleClickSortType={handleClickSortType}
               handleApplyButton={handleApplyButton}
@@ -172,10 +183,17 @@ const ReviewList = () => {
               <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
             </ChoiceButton>
           </ViewChoice>
-          {viewType === 'grid' ? <Grid handleClickDetail={handleClickDetail} /> : <List data={reviews} />}
+          {viewType === 'grid' ? (
+            <Grid handleClickDetail={handleClickDetail} />
+          ) : (
+            <List data={reviews} setShareModal={setShareModal} />
+          )}
         </ReviewListContainer>
       )}
-      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} isFetching={isFetching} />}
+      {current === 'detail' && (
+        <ReviewDetail setCurrent={setCurrent} index={index} isFetching={isFetching} setShareModal={setShareModal} />
+      )}
+      {shareModal && <ShareModal setShareModal={setShareModal} />}
       <InfiniteLoading ref={setTarget}>
         {!loading && isFetching && !sortModal && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
       </InfiniteLoading>

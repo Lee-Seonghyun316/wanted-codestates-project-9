@@ -2,12 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { sortData } from '../../data';
+import BlackOut from './BlackOut';
 
-const Modal = ({ closeModal, handleClickSortType, handleApplyButton, sort }) => {
+const SortModal = ({ closeModal, handleClickSortType, handleApplyButton, sort }) => {
   return (
-    <Wrap>
-      <BlackOut onClick={closeModal} />
-      <SortModal>
+    <>
+      <BlackOut closeModal={closeModal}/>
+      <Content>
         <ModalTitle>정렬</ModalTitle>
         <SortTypes>
           {sortData.map((item) => (
@@ -20,38 +21,25 @@ const Modal = ({ closeModal, handleClickSortType, handleApplyButton, sort }) => 
           ))}
         </SortTypes>
         <ApplyButton onClick={handleApplyButton}>적용하기</ApplyButton>
-      </SortModal>
-    </Wrap>
+      </Content>
+    </>
   );
 };
 
-Modal.propTypes = {
+SortModal.propTypes = {
   closeModal: PropTypes.func,
   handleClickSortType: PropTypes.func,
   handleApplyButton: PropTypes.func,
   sort: PropTypes.string,
 };
 
-Modal.defaultProps = {
+SortModal.defaultProps = {
   sort: 'recent',
 };
 
-export default Modal;
+export default SortModal;
 
-const Wrap = styled.div``;
-
-const BlackOut = styled.div`
-  position: absolute;
-  z-index: 9;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: ${({ theme }) => theme.color.black};
-  opacity: 0.4;
-`;
-
-const SortModal = styled.div`
+const Content = styled.div`
   position: absolute;
   bottom: 0;
   width: 100vw;

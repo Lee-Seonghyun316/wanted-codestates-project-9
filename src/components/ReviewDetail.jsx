@@ -5,9 +5,13 @@ import ListItem from './common/ListItem';
 import { v4 as uuidv4 } from 'uuid';
 import Comments from './common/Comments';
 
-const ReviewDetail = ({ index, setCurrent, isFetching }) => {
+const ReviewDetail = ({ index, setCurrent, isFetching, setShareModal }) => {
   const reviews = useSelector((state) => state.reviews.data);
   const slicedReviews = reviews.slice(index);
+  useEffect(() => {
+    console.log('재랜더링');
+    console.log(index, isFetching);
+  }, [index, setCurrent, isFetching, setShareModal]);
   useEffect(() => {
     const scroll = window.scrollY;
     if (isFetching) {
@@ -42,7 +46,7 @@ const ReviewDetail = ({ index, setCurrent, isFetching }) => {
       <section>
         {slicedReviews.map((review) => (
           <div key={uuidv4()}>
-            <ListItem review={review} key={uuidv4()} />
+            <ListItem review={review} key={uuidv4()} setShareModal={setShareModal} />
             <Comments id={review.id} key={uuidv4()} />
           </div>
         ))}
