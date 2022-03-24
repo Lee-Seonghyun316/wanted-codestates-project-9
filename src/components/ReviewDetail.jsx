@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import ListItem from './common/ListItem';
 import { v4 as uuidv4 } from 'uuid';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import ReactLoading from 'react-loading';
+import ListItem from './common/ListItem';
 import Comments from './common/Comments';
 import ShareModal from './common/ShareModal';
-import { useSearchParams } from 'react-router-dom';
 import { useGetCertainReviewsQuery } from '../features/reviews/fetchReviews';
-import ReactLoading from 'react-loading';
-import { addData, addQueryData, addRandomData, incrementQueryPage } from '../features/reviews/reviews';
+import { addQueryData, incrementQueryPage } from '../features/reviews/reviews';
 
 const ReviewDetail = ({ index, setCurrent }) => {
+  let [params] = useSearchParams();
+  let reviewId = params.get('review-id');
   const { queryPage, queryData, reviews } = useSelector(
     (state) => ({
       queryPage: state.reviews.queryPage,
@@ -19,16 +21,13 @@ const ReviewDetail = ({ index, setCurrent }) => {
     }),
     shallowEqual
   );
-  let [params] = useSearchParams();
-  let reviewId = params.get('review-id');
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetCertainReviewsQuery({
     page: queryPage,
     reviewId: reviewId,
   });
-  const [shareModal, setShareModal] = useState(false);
   const slicedReviews = queryData ? queryData : reviews.slice(index);
+  const [shareModal, setShareModal] = useState(false);
   const [target, setTarget] = useState(null);
-  const dispatch = useDispatch();
   useEffect(() => {
     let observer;
     if (target) {
@@ -39,9 +38,9 @@ const ReviewDetail = ({ index, setCurrent }) => {
     }
     return () => observer && observer.disconnect();
   }, [target]);
+  const dispatch = useDispatch();
   useEffect(() => {
     if (data) {
-      console.log(data.data);
       dispatch(addQueryData(data.data));
     }
   }, [data]);
@@ -50,9 +49,9 @@ const ReviewDetail = ({ index, setCurrent }) => {
       await dispatch(incrementQueryPage());
     }
   };
+  const navigate = useNavigate();
   const handleClickBack = () => {
-    setCurrent && setCurrent('list');
-    //없을 때는 링크 이동
+    setCurrent ? setCurrent('list') : navigate('/');
   };
 
   return (
