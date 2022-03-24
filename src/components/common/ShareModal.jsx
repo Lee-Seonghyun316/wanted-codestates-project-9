@@ -16,7 +16,7 @@ const ShareModal = ({ setShareModal, reviewId, sort }) => {
   };
   useEffect(() => {
     return () => clearTimeout(timeout);
-  });
+  }, []);
   const filteringSort = sort ? sort : 'recent';
   const shareUrl = `${ROOT_URL}detail?review-id=${reviewId}&sort=${filteringSort}`;
   const closeModal = () => {

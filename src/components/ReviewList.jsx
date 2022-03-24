@@ -21,6 +21,7 @@ import { sortData } from '../data';
 import SortModal from './common/SortModal';
 import ReviewDetail from './ReviewDetail';
 import ShareModal from './common/ShareModal';
+import { useStopScroll } from '../features/useStopScroll';
 
 const ReviewList = () => {
   const [copyId, setCopyId] = useState(null);
@@ -128,11 +129,13 @@ const ReviewList = () => {
     setCurrent('detail');
     setIndex(index);
   };
+  useStopScroll(shareModal);
+  useStopScroll(sortModal);
 
   return (
     <Wrap>
       {current === 'list' && (
-        <ReviewListContainer modalVisible={sortModal}>
+        <div>
           <Head />
           <Filters>
             <Filter text="정렬" type="main" onClick={handleClickSort} />
@@ -140,14 +143,6 @@ const ReviewList = () => {
             <Filter text="인기 디자이너" />
             <Filter text="카테고리" />
           </Filters>
-          {sortModal && (
-            <SortModal
-              closeModal={closeModal}
-              handleClickSortType={handleClickSortType}
-              handleApplyButton={handleApplyButton}
-              sort={sort}
-            />
-          )}
           <Tags>
             {searchTagName(sort)}
             <Tag>전체</Tag>
@@ -176,8 +171,16 @@ const ReviewList = () => {
           <InfiniteLoading ref={setTarget}>
             {!loading && isFetching && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
           </InfiniteLoading>
+          {sortModal && (
+            <SortModal
+              closeModal={closeModal}
+              handleClickSortType={handleClickSortType}
+              handleApplyButton={handleApplyButton}
+              sort={sort}
+            />
+          )}
           {shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} sort={sort} />}
-        </ReviewListContainer>
+        </div>
       )}
       {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} currentSort={sort} />}
     </Wrap>

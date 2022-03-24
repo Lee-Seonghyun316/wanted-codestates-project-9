@@ -6,8 +6,8 @@ import BlackOut from './BlackOut';
 
 const SortModal = ({ closeModal, handleClickSortType, handleApplyButton, sort }) => {
   return (
-    <>
-      <BlackOut closeModal={closeModal}/>
+    <Wrap top={window.scrollY}>
+      <BlackOut closeModal={closeModal} />
       <Content>
         <ModalTitle>정렬</ModalTitle>
         <SortTypes>
@@ -22,7 +22,7 @@ const SortModal = ({ closeModal, handleClickSortType, handleApplyButton, sort })
         </SortTypes>
         <ApplyButton onClick={handleApplyButton}>적용하기</ApplyButton>
       </Content>
-    </>
+    </Wrap>
   );
 };
 
@@ -38,6 +38,14 @@ SortModal.defaultProps = {
 };
 
 export default SortModal;
+
+const Wrap = styled.div`
+  position: absolute;
+  top: ${({ top }) => top}px;
+  left: 0;
+  height: 100%;
+  width: 100%;
+`;
 
 const Content = styled.div`
   position: absolute;

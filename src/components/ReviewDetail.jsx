@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import Comments from './common/Comments';
 import ShareModal from './common/ShareModal';
 import { useGetCertainReviewsQuery } from '../features/reviews/fetchReviews';
 import { addQueryData, deleteQueryData, incrementQueryPage, queryPageInitialize } from '../features/reviews/reviews';
+import { useStopScroll } from '../features/useStopScroll';
 
 const ReviewDetail = ({ index, setCurrent, currentSort }) => {
   const [copyId, setCopyId] = useState();
@@ -62,6 +63,7 @@ const ReviewDetail = ({ index, setCurrent, currentSort }) => {
       navigate('/');
     }
   };
+  useStopScroll(shareModal);
 
   return (
     <Wrap shareModal={shareModal}>

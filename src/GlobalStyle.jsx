@@ -1,5 +1,4 @@
 import { createGlobalStyle } from 'styled-components';
-import { bool } from 'prop-types';
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -43,6 +42,7 @@ html {
 }
 body {
   line-height: 1;
+  height: 100%;
 }
 ol, ul {
   list-style: none;
