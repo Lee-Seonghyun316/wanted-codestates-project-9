@@ -6,15 +6,21 @@ import { v4 as uuidv4 } from 'uuid';
 import Comments from './common/Comments';
 import ShareModal from './common/ShareModal';
 import { useSearchParams } from 'react-router-dom';
+import { useGetCertainReviewsQuery } from '../features/reviews/fetchReviews';
 
 const ReviewDetail = ({ index, setCurrent }) => {
+  const queryPage = useSelector((state) => state.reviews.queryPage);
   //index 쿼리에 있으면 그거 쓰게!
   let [params] = useSearchParams();
   let reviewId = params.get('review-id');
   console.log(reviewId);
+  const { data, error, isSuccess, isError, isFetching, isLoading } = useGetCertainReviewsQuery({
+    page: queryPage,
+    reviewId: reviewId,
+  });
   const [shareModal, setShareModal] = useState(false);
   const reviews = useSelector((state) => state.reviews.data);
-  const slicedReviews = reviews.slice(index);
+  const slicedReviews = data ? data.data : reviews.slice(index);
   const handleClickBack = () => {
     setCurrent && setCurrent('list');
     //없을 때는 링크 이동
