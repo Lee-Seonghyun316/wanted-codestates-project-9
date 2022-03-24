@@ -107,6 +107,7 @@ const Activity = styled.button`
   background-image: ${({ src }) => src && `url(${src})`};
   margin-left: 1rem;
   ${activityStyle};
+  cursor: pointer;
 `;
 
 const Expression = styled.div`

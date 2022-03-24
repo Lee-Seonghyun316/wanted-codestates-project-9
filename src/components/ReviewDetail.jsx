@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import ListItem from './common/ListItem';
 import { v4 as uuidv4 } from 'uuid';
 import Comments from './common/Comments';
+import ShareModal from './common/ShareModal';
+import { useSearchParams } from 'react-router-dom';
 
-const ReviewDetail = ({ index, setCurrent, isFetching, setShareModal }) => {
+const ReviewDetail = ({ index, setCurrent }) => {
+  //index 쿼리에 있으면 그거 쓰게!
+  let [params] = useSearchParams();
+  let reviewId = params.get('review-id');
+  console.log(reviewId);
+  const [shareModal, setShareModal] = useState(false);
   const reviews = useSelector((state) => state.reviews.data);
   const slicedReviews = reviews.slice(index);
   const handleClickBack = () => {
-    setCurrent('list');
+    setCurrent && setCurrent('list');
+    //없을 때는 링크 이동
   };
 
   return (
@@ -31,6 +39,7 @@ const ReviewDetail = ({ index, setCurrent, isFetching, setShareModal }) => {
           </div>
         ))}
       </section>
+      {shareModal && <ShareModal setShareModal={setShareModal} />}
     </div>
   );
 };

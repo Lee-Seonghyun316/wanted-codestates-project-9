@@ -173,16 +173,12 @@ const ReviewList = () => {
             <List data={reviews} setShareModal={setShareModal} />
           )}
           <InfiniteLoading ref={setTarget}>
-            {!loading && isFetching && !sortModal && (
-              <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />
-            )}
+            {!loading && isFetching && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
           </InfiniteLoading>
+          {shareModal && <ShareModal setShareModal={setShareModal} />}
         </ReviewListContainer>
       )}
-      {current === 'detail' && (
-        <ReviewDetail setCurrent={setCurrent} index={index} isFetching={isFetching} setShareModal={setShareModal} />
-      )}
-      {shareModal && <ShareModal setShareModal={setShareModal} />}
+      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} />}
     </Wrap>
   );
 };
