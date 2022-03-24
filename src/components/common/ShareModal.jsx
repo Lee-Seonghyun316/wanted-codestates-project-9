@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import BlackOut from './BlackOut';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -7,18 +7,25 @@ const ROOT_URL = 'http://localhost:3000/';
 
 const ShareModal = ({ setShareModal, reviewId, sort }) => {
   const [copy, setCopy] = useState(false);
+  let timeout;
   const handleClick = () => {
     setCopy(true);
-    setTimeout(() => {
+    timeout = setTimeout(() => {
       setCopy(false);
     }, 1500);
   };
+  useEffect(() => {
+    return () => clearTimeout(timeout);
+  });
   const filteringSort = sort ? sort : 'recent';
   const shareUrl = `${ROOT_URL}detail?review-id=${reviewId}&sort=${filteringSort}`;
+  const closeModal = () => {
+    setShareModal(false);
+  };
   return (
     <Wrap top={window.scrollY}>
       {copy && <Message>링크 복사 완료:)</Message>}
-      <BlackOut closeModal={() => setShareModal(false)} />
+      <BlackOut closeModal={closeModal} />
       <Content>
         {/*<Img src="https://static.balaan.co.kr/mobile/img/share/btn_share_kt.png" alt="kakao" />*/}
         <CopyToClipboard text={shareUrl}>
