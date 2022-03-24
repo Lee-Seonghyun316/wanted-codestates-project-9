@@ -9,7 +9,7 @@ import Comments from '../components/common/Comments';
 import ShareModal from '../components/common/ShareModal';
 import { useGetCertainReviewsQuery } from '../redux/fetchReviews';
 import { addQueryData, deleteQueryData, incrementQueryPage, queryPageInitialize } from '../redux/reviews';
-import { useStopScroll } from '../redux/useStopScroll';
+import { useStopScroll } from '../hooks/useStopScroll';
 
 const ReviewDetail = ({ index, setCurrent, currentSort }) => {
   const [copyId, setCopyId] = useState();

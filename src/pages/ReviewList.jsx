@@ -21,7 +21,7 @@ import { sortData } from '../data';
 import SortModal from '../components/common/SortModal';
 import ReviewDetail from './ReviewDetail';
 import ShareModal from '../components/common/ShareModal';
-import { useStopScroll } from '../redux/useStopScroll';
+import { useStopScroll } from '../hooks/useStopScroll';
 
 const ReviewList = () => {
   const [copyId, setCopyId] = useState(null);
