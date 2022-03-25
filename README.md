@@ -76,6 +76,26 @@ npm run start
 - placeholder 대신 label을 사용하여 웹 접근성을 생각했습니다. 
 - 반응형
 
+## 주요문서구조
+```sh
+├─Github
+├─README.md
+├─.prettierrc
+├─.gitignore
+├─.index.js
+├─.App.js
+├─.store.js
+├─.theme.js
+├─.GlobalStyle.jsx
+├─src
+   │-components
+   ├─hooks
+   ├─hooks
+   ├─pages
+   ├─redux
+   └─sort(로컬데이터, 정렬함수생성)      
+
+
 ## dev log
 - 예시 페이지에서 url 변경 없이 페이지 이동(컴포넌트 변경)이 일어나고 있어서 동일하게 개발했는데, 공유기능을 개발하면서 보니 공유 url에는 쿼리포함 라우팅된 주소가 들어있었다. 유사하게 개발하면서 그 이유에 대해 고민해보았는데 가설은 다음과 가설은 다음과 같습니다. 
 (가설1 : 컴포넌트 변경을 통해 네트워크 요청을 줄이기 위해서)
