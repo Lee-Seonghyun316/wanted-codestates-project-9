@@ -165,10 +165,11 @@ const Comment = styled.div`
 const MainInfo = styled.div`
   display: flex;
   flex-wrap: wrap;
+  font-size: 1.3rem;
+  align-items: center;
 `;
 
 const Id = styled.h1`
-  font-size: 1.3rem;
   font-weight: bold;
   letter-spacing: -0.025rem;
   margin-right: 0.6rem;
