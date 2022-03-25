@@ -1,6 +1,7 @@
-import React, { createElement, useCallback, useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 import SubHeader from '../components/common/SubHeader';
+import { v4 as uuidv4 } from 'uuid';
 
 const ReviewRegister = () => {
   const [input, setInput] = useState({
@@ -31,33 +32,16 @@ const ReviewRegister = () => {
   };
   const onLoadFile = (e) => {
     const newFiles = e.target.files;
-    setFiles([...files, ...newFiles]);
+    let newUrls = [];
+    for (let i = 0; i < newFiles.length; i++) {
+      newUrls.push({ file: newFiles[i], src: URL.createObjectURL(newFiles[i]) });
+    }
+    setFiles([...files, ...newUrls]);
   };
-  const imgStyle = {
-    height: '5rem',
-    width: '5rem',
-    objectFit: 'cover',
-    marginRight: '1rem',
+  const handleClickDeleteFile = (src) => {
+    URL.revokeObjectURL(src);
+    setFiles((files) => files.filter((file) => file.src !== src));
   };
-  const preview = useCallback(() => {
-    if (files.length === 0) return false;
-    const imgBoxes = document.querySelector('.img__boxes');
-    imgBoxes.innerHTML = ``;
-    files.map((file) => {
-      const imgBox = document.createElement('img');
-      imgBox.style.height = '5rem';
-      imgBox.style.width = '5rem';
-      imgBox.style.objectFit = 'cover';
-      imgBoxes.append(imgBox);
-      const reader = new FileReader();
-      reader.onload = () => (imgBox.src = `${reader.result}`);
-      reader.readAsDataURL(file);
-    });
-  }, [files]);
-  useEffect(() => {
-    preview();
-    return () => preview();
-  });
 
   return (
     <React.Fragment>
@@ -81,9 +65,17 @@ const ReviewRegister = () => {
             <Title>사진 등록</Title>
             <Description>{files.length}장 / 최대 8장</Description>
           </FlexContainer>
-          <AddPictureLabel htmlFor="picture">+</AddPictureLabel>
-          <ImgBoxes className="img__boxes" />
-          <FileInput id="picture" type="file" accept="img/*" onChange={onLoadFile} />
+          <ImgBoxes>
+            <AddPictureLabel htmlFor="picture">+</AddPictureLabel>
+            <FileInput id="picture" type="file" accept="img/*" onChange={onLoadFile} multiple />
+            {files.length > 0 &&
+              files.map((file) => (
+                <ImgBox>
+                  <XBtn onClick={() => handleClickDeleteFile(file.src)}>+</XBtn>
+                  <Img src={file.src} alt="preview" key={file.src} />
+                </ImgBox>
+              ))}
+          </ImgBoxes>
           <Description left={true}>
             구매한 상품이 아니거나 캡쳐 사진을 첨부할 경우, 통보없이 삭제 및 적립 혜택이 취소됩니다.
           </Description>
@@ -148,8 +140,8 @@ const FlexContainer = styled.div`
 
 const AddPictureLabel = styled.label`
   font-size: ${({ theme }) => theme.fontSize.big};
-  color: ${({ theme }) => theme.color.grey};
-  border: 1px solid ${({ theme }) => theme.color.grey};
+  color: ${({ theme }) => theme.color.lightBlue};
+  border: 1px solid ${({ theme }) => theme.color.lightBlue};
   height: 5rem;
   width: 5rem;
   display: flex;
@@ -161,6 +153,30 @@ const AddPictureLabel = styled.label`
 const ImgBoxes = styled.div`
   display: flex;
   gap: 1rem;
+`;
+
+const ImgBox = styled.div`
+  position: relative;
+`;
+
+const Img = styled.img`
+  width: 5rem;
+  height: 5rem;
+`;
+
+const XBtn = styled.button`
+  position: absolute;
+  right: -7px;
+  top: -7px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: white;
+  border: 1px solid ${({ theme }) => theme.color.lightBlue};
+  color: ${({ theme }) => theme.color.blue};
+  transform: rotate(45deg);
+  font-size: ${({ theme }) => theme.usefulUnit.small};
+  cursor: pointer;
 `;
 
 const FileInput = styled.input`
