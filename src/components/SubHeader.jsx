@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const SubHeader = ({ onClick, title }) => (
   <Head>
     <Button onClick={onClick}>
-      <ButtonImg src="http://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_left_btn.png" alt="back" />
+      <ButtonImg src="https://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_left_btn.png" alt="back" />
     </Button>
     {title}
     <Button onClick={onClick}>
@@ -20,7 +20,7 @@ const Head = styled.header`
   text-align: center;
   padding: 1.4rem 0;
   top: 0;
-  box-shadow: 0 0px 3px 0px #ccc;
+  box-shadow: 0 0 3px 0 #ccc;
   width: 100%;
   background: #fff;
   z-index: 8;

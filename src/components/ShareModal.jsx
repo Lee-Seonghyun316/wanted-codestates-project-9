@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import BlackOut from './BlackOut';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-const ROOT_URL = 'http://localhost:3000/';
+const ROOT_URL = 'https://wanted-codestates-project-9-kappa.vercel.app/';
 
 const ShareModal = ({ setShareModal, reviewId, sort = 'recent' }) => {
   const [copy, setCopy] = useState(false);
@@ -27,7 +27,6 @@ const ShareModal = ({ setShareModal, reviewId, sort = 'recent' }) => {
       {copy && <Message>링크 복사 완료:)</Message>}
       <BlackOut closeModal={closeModal} />
       <Content>
-        {/*<Img src="https://static.balaan.co.kr/mobile/img/share/btn_share_kt.png" alt="kakao" />*/}
         <CopyToClipboard text={shareUrl}>
           <button onClick={handleClick}>
             <Img src="https://static.balaan.co.kr/mobile/img/share/btn_share_url.png" alt="url" />
