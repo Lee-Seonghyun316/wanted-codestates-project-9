@@ -8,6 +8,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { deleteData } from '../redux/reviews';
 import { useDispatch } from 'react-redux';
+import ReactLoading from 'react-loading';
 
 const NICKNAME = 'FEDeveloper';
 const ReviewRegister = () => {
@@ -22,6 +23,8 @@ const ReviewRegister = () => {
   });
   const { fileError } = errorMessage;
   const [stars, setStars] = useState([false, false, false, false, false]);
+  const [loading, setLoading] = useState(false);
+  const [registerText, setRegisterText] = useState('등록하기');
   const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -66,6 +69,14 @@ const ReviewRegister = () => {
         },
       };
       setLocalReviews([Data, ...localReviews]);
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        setRegisterText('등록완료:)');
+        setTimeout(() => {
+          navigate('/');
+        }, 500);
+      }, 1500);
     }
   };
   const onLoadFile = (e) => {
@@ -173,8 +184,11 @@ const ReviewRegister = () => {
               구매한 상품이 아니거나 캡쳐 사진을 첨부할 경우, 통보없이 삭제 및 적립 혜택이 취소됩니다.
             </Description>
           </Section>
-          <RegisterButton onClick={handleClickRegister} able={title && content.length > 9}>
-            등록하기
+          <RegisterButton
+            onClick={handleClickRegister}
+            able={title && content.length > 9 && registerText === '등록하기'}
+          >
+            {loading ? <ReactLoading type="spin" color="#fff" width="1.5rem" height="1.5rem" /> : registerText}
           </RegisterButton>
         </Form>
       </Wrap>
@@ -291,6 +305,8 @@ const RegisterButton = styled.button`
   font-size: ${({ theme }) => theme.usefulUnit.basic};
   margin: ${({ theme }) => theme.usefulUnit.middle} 0;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
 `;
 
 const ErrorMessage = styled.p`
