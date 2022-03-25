@@ -94,10 +94,11 @@ const ReviewRegister = () => {
   };
   const handleClickStar = (e, index) => {
     e.preventDefault();
-    const headStars = stars.slice(0, index);
-    const tailStars = stars.slice(index + 1);
-    const value = stars[index] === true ? false : true;
-    setStars([...headStars, value, ...tailStars]);
+    const newStars = [];
+    stars.forEach((star, i) => {
+      index < i ? newStars.push(false) : newStars.push(true);
+    });
+    setStars(newStars);
   };
   const handleClickList = async () => {
     await dispatch(deleteData());
