@@ -4,13 +4,13 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import ReactLoading from 'react-loading';
-import ListItem from '../components/common/ListItem';
-import Comments from '../components/common/Comments';
-import ShareModal from '../components/common/ShareModal';
+import ListItem from '../components/ListItem';
+import Comments from '../components/Comments';
+import ShareModal from '../components/ShareModal';
 import { useGetCertainReviewsQuery } from '../redux/fetchReviews';
 import { addQueryData, deleteQueryData, incrementQueryPage, queryPageInitialize } from '../redux/reviews';
 import { useStopScroll } from '../hooks/useStopScroll';
-import SubHeader from '../components/common/SubHeader';
+import SubHeader from '../components/SubHeader';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 const ReviewDetail = ({ index, setCurrent, currentSort }) => {

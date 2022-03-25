@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { sortData } from '../../data';
+import { sortData } from '../data';
 import BlackOut from './BlackOut';
 
 const SortModal = ({ closeModal, handleClickSortType, handleApplyButton, sort }) => {
