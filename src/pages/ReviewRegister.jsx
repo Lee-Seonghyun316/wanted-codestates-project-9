@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { createElement, useCallback, useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
 import SubHeader from '../components/common/SubHeader';
 
 const ReviewRegister = () => {
@@ -7,7 +7,7 @@ const ReviewRegister = () => {
     title: '',
     content: '',
   });
-  const [files, setFiles] = useState('');
+  const [files, setFiles] = useState([]);
   const handleChange = (e) => {
     const { value, id } = e.target;
     setInput({
@@ -27,20 +27,33 @@ const ReviewRegister = () => {
       header: config,
       data: formData,
     };
-    console.log(Data);
+    console.log(Data, 'Data');
   };
   const onLoadFile = (e) => {
-    const file = e.target.files;
-    console.log(file);
-    setFiles(file);
+    const newFiles = e.target.files;
+    setFiles([...files, ...newFiles]);
   };
-  const preview = () => {
-    if (!files) return false;
-    const imgEl = document.querySelector('.img__box');
-    const reader = new FileReader();
-    reader.onload = () => (imgEl.style.backgroundImage = `url(${reader.result}`);
-    reader.readAsDataURL(files[0]);
+  const imgStyle = {
+    height: '5rem',
+    width: '5rem',
+    objectFit: 'cover',
+    marginRight: '1rem',
   };
+  const preview = useCallback(() => {
+    if (files.length === 0) return false;
+    const imgBoxes = document.querySelector('.img__boxes');
+    imgBoxes.innerHTML = ``;
+    files.map((file) => {
+      const imgBox = document.createElement('img');
+      imgBox.style.height = '5rem';
+      imgBox.style.width = '5rem';
+      imgBox.style.objectFit = 'cover';
+      imgBoxes.append(imgBox);
+      const reader = new FileReader();
+      reader.onload = () => (imgBox.src = `${reader.result}`);
+      reader.readAsDataURL(file);
+    });
+  }, [files]);
   useEffect(() => {
     preview();
     return () => preview();
@@ -48,6 +61,7 @@ const ReviewRegister = () => {
 
   return (
     <React.Fragment>
+      {console.log(files, 'files')}
       <SubHeader title="리뷰 작성" />
       <Wrap>
         <Form>
@@ -62,13 +76,13 @@ const ReviewRegister = () => {
             오해의 소지가 있는 내용을 작성 시 검토 후 비공개 조치될 수 있습니다.
             <Input id="content" onChange={handleChange} value={input.content} />
           </Label>
-          <Description>0자 / 최소 10자</Description>
+          <Description>{input.content.length}자 / 최소 10자</Description>
           <FlexContainer>
             <Title>사진 등록</Title>
-            <Description>0장 / 최대 8장</Description>
+            <Description>{files.length}장 / 최대 8장</Description>
           </FlexContainer>
           <AddPictureLabel htmlFor="picture">+</AddPictureLabel>
-          <ImgBox className="img__box" />
+          <ImgBoxes className="img__boxes" />
           <FileInput id="picture" type="file" accept="img/*" onChange={onLoadFile} />
           <Description left={true}>
             구매한 상품이 아니거나 캡쳐 사진을 첨부할 경우, 통보없이 삭제 및 적립 혜택이 취소됩니다.
@@ -144,10 +158,9 @@ const AddPictureLabel = styled.label`
   cursor: pointer;
 `;
 
-const ImgBox = styled.div`
-  height: 5rem;
-  width: 5rem;
-  background-size: cover;
+const ImgBoxes = styled.div`
+  display: flex;
+  gap: 1rem;
 `;
 
 const FileInput = styled.input`
