@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import SubHeader from '../components/common/SubHeader';
 import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 const ReviewRegister = () => {
+  const navigate = useNavigate();
   const [input, setInput] = useState({
     title: '',
     content: '',
@@ -65,7 +67,7 @@ const ReviewRegister = () => {
 
   return (
     <React.Fragment>
-      <SubHeader title="리뷰 작성" />
+      <SubHeader title="리뷰 작성" onClick={() => navigate('/')} />
       <Wrap>
         <Form>
           <ProductName>[국내/당일] 22SS 생로랑 모노그램 카드지갑 423291</ProductName>

@@ -3,13 +3,13 @@ import styled from 'styled-components';
 
 const SubHeader = ({ onClick, title }) => (
   <Head>
-    <button onClick={onClick}>
+    <Button onClick={onClick}>
       <ButtonImg src="http://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_left_btn.png" alt="back" />
-    </button>
+    </Button>
     {title}
-    <button onClick={onClick}>
+    <Button onClick={onClick}>
       <ButtonImg src="https://djp5oonlusoz4.cloudfront.net/contents/event/20190924/ic_can_btn.png" alt="x" />
-    </button>
+    </Button>
   </Head>
 );
 
@@ -39,4 +39,8 @@ const Head = styled.header`
 const ButtonImg = styled.img`
   width: 1.5rem;
   margin: 0.3rem 1.6rem 0;
+`;
+
+const Button = styled.button`
+  cursor: pointer;
 `;

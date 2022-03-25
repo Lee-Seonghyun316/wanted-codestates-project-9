@@ -3,8 +3,11 @@ import styled, { css } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faMagnifyingGlass, faBagShopping } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 const Head = () => {
+  const navigate = useNavigate();
+
   return (
     <Wrap>
       <Main>
@@ -23,7 +26,7 @@ const Head = () => {
         <NavItem>당일배송</NavItem>
         <NavItem>디자이너</NavItem>
         <NavItem selected={true}>리뷰</NavItem>
-        <NavItem>이벤트</NavItem>
+        <NavItem onClick={() => navigate('/register')}>리뷰작성</NavItem>
       </Nav>
     </Wrap>
   );
@@ -77,6 +80,7 @@ const NavItem = styled.li`
   text-align: center;
   white-space: nowrap;
   padding-bottom: 0.4rem;
+  cursor: pointer;
   ${({ selected, theme }) =>
     selected &&
     css`
