@@ -37,7 +37,7 @@ const ReviewRegister = () => {
   };
   const handleClickRegister = (e) => {
     e.preventDefault();
-    if (title && content.length > 9) {
+    if (title && content.length > 9 && files.length > 0) {
       const formData = new FormData();
       formData.append(
         'Img',
@@ -179,14 +179,14 @@ const ReviewRegister = () => {
                   </ImgBox>
                 ))}
             </ImgBoxes>
-            <Description>{files.length}장 / 최대 8장</Description>
+            <Description>{files.length}장 / 최대 8장(최소 1장)</Description>
             <Description left={true}>
               구매한 상품이 아니거나 캡쳐 사진을 첨부할 경우, 통보없이 삭제 및 적립 혜택이 취소됩니다.
             </Description>
           </Section>
           <RegisterButton
             onClick={handleClickRegister}
-            able={title && content.length > 9 && registerText === '등록하기'}
+            able={title && content.length > 9 && files.length > 0 && registerText === '등록하기'}
           >
             {loading ? <ReactLoading type="spin" color="#fff" width="1.5rem" height="1.5rem" /> : registerText}
           </RegisterButton>
