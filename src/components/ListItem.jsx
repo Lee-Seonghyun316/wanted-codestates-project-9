@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import styled, { css } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
-const ListItem = ({ review, setShareModal, setCopyId }) => {
-  const [like, setLike] = useState(false);
+const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishData }) => {
   const renderStar = (point) => {
     const pointArr = [];
     for (let i = 0; i < point; i++) {
@@ -28,8 +27,12 @@ const ListItem = ({ review, setShareModal, setCopyId }) => {
       </Questions>
     );
   };
-  const handleClickLike = () => {
-    setLike(!like);
+  const handleClickLike = (wish) => {
+    if (wishData.includes(wish)) {
+      setWishData(wishData.filter((data) => data !== wish));
+      return;
+    }
+    setWishData(wishData.concat([wish]));
   };
   const handleClickShare = (id) => {
     setShareModal(true);
@@ -56,8 +59,8 @@ const ListItem = ({ review, setShareModal, setCopyId }) => {
             onClick={() => handleClickShare(review.id)}
           />
         </ActivitySet>
-        <Expression like={like}>
-          <FontAwesomeIcon icon={faHeart} onClick={handleClickLike} />
+        <Expression like={wishData.includes(review)}>
+          <FontAwesomeIcon icon={faHeart} onClick={() => handleClickLike(review)} />
         </Expression>
       </Activities>
       <StarCore>{renderStar(review?.point)}</StarCore>
@@ -116,7 +119,7 @@ const Activity = styled.button`
 
 const Expression = styled.div`
   font-size: 2rem;
-  color: ${({ like, theme }) => (like ? '#DB4545' : '#E5E5E5')};
+  color: ${({ like }) => (like ? '#DB4545' : '#E5E5E5')};
   cursor: pointer;
 `;
 

@@ -27,7 +27,7 @@ const CommentForm = ({ newComment, placeholder, depth, fixedInput, fixComment })
 export default CommentForm;
 
 const Form = styled.form`
-  margin-top: 1rem;
+  margin: 1rem 0;
   display: flex;
   flex-flow: row nowrap;
 `;

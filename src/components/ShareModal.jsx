@@ -5,7 +5,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const ROOT_URL = 'http://localhost:3000/';
 
-const ShareModal = ({ setShareModal, reviewId, sort }) => {
+const ShareModal = ({ setShareModal, reviewId, sort = 'recent' }) => {
   const [copy, setCopy] = useState(false);
   let timeout;
   const handleClick = () => {
