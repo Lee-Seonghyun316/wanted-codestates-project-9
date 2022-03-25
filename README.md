@@ -93,7 +93,8 @@ npm run start
    ├─hooks
    ├─pages
    ├─redux
-   └─sort(로컬데이터, 정렬함수생성)      
+   └─sort(로컬데이터, 정렬함수생성)     
+```
 
 
 ## dev log
