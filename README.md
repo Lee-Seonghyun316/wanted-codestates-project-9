@@ -82,11 +82,11 @@ npm run start
 ├─README.md
 ├─.prettierrc
 ├─.gitignore
-├─.index.js
-├─.App.js
-├─.store.js
-├─.theme.js
-├─.GlobalStyle.jsx
+├─index.js
+├─App.js
+├─store.js
+├─theme.js
+├─GlobalStyle.jsx
 ├─src
    │-components
    ├─hooks
