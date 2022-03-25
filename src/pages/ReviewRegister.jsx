@@ -8,7 +8,12 @@ const ReviewRegister = () => {
     title: '',
     content: '',
   });
+  const { title, content } = input;
   const [files, setFiles] = useState([]);
+  const [errorMessage, setErrorMessage] = useState({
+    fileError: false,
+  });
+  const { fileError } = errorMessage;
   const handleChange = (e) => {
     const { value, id } = e.target;
     setInput({
@@ -17,24 +22,39 @@ const ReviewRegister = () => {
     });
   };
   const handleClickRegister = (e) => {
-    const formData = new FormData();
-    formData.append('uploadImage', files[0]);
-    const config = {
-      Headers: {
-        'content-type': 'multipart/form-data',
-      },
-    };
-    const Data = {
-      header: config,
-      data: formData,
-    };
-    console.log(Data, 'Data');
+    e.preventDefault();
+    if (title && content.length > 9) {
+      const formData = new FormData();
+      formData.append(
+        'Img',
+        files.map((file) => file.file)
+      );
+      formData.append('title', title);
+      formData.append('content', content);
+      const config = {
+        Headers: {
+          'content-type': 'multipart/form-data',
+        },
+      };
+      const Data = {
+        header: config,
+        data: { title: title, content: content, formData: formData, imgSrc: files.map((file) => file.src) },
+      };
+      console.log(Data, 'Data');
+    }
   };
   const onLoadFile = (e) => {
     const newFiles = e.target.files;
     let newUrls = [];
     for (let i = 0; i < newFiles.length; i++) {
       newUrls.push({ file: newFiles[i], src: URL.createObjectURL(newFiles[i]) });
+    }
+    if (newUrls.length + files.length > 9) {
+      setErrorMessage({ ...errorMessage, fileError: true });
+      setTimeout(() => {
+        setErrorMessage({ ...errorMessage, fileError: false });
+      }, 1500);
+      return;
     }
     setFiles([...files, ...newUrls]);
   };
@@ -45,41 +65,51 @@ const ReviewRegister = () => {
 
   return (
     <React.Fragment>
-      {console.log(files, 'files')}
       <SubHeader title="리뷰 작성" />
       <Wrap>
         <Form>
           <ProductName>[국내/당일] 22SS 생로랑 모노그램 카드지갑 423291</ProductName>
-          <Title>제목</Title>
-          <Label htmlFor="title">
-            제목을 입력해주세요
-            <Input id="title" onChange={handleChange} value={input.title} />
-          </Label>
-          <Title>내용</Title>
-          <Label htmlFor="content">
-            오해의 소지가 있는 내용을 작성 시 검토 후 비공개 조치될 수 있습니다.
-            <Input id="content" onChange={handleChange} value={input.content} />
-          </Label>
-          <Description>{input.content.length}자 / 최소 10자</Description>
-          <FlexContainer>
-            <Title>사진 등록</Title>
+          <Section>
+            <Title>제목</Title>
+            <Label htmlFor="title">
+              제목을 입력해주세요
+              <Input id="title" onChange={handleChange} value={input.title} />
+            </Label>
+          </Section>
+          <Section>
+            <Title>내용</Title>
+            <Label htmlFor="content">
+              오해의 소지가 있는 내용을 작성 시 검토 후 비공개 조치될 수 있습니다.
+              <Input id="content" onChange={handleChange} value={input.content} />
+            </Label>
+            <Description>{input.content.length}자 / 최소 10자</Description>
+          </Section>
+          <Section>
+            <FlexContainer>
+              <Title>
+                <ErrorMessage fileError={fileError}>8장 이상 등록불가:(</ErrorMessage>
+                사진 등록
+              </Title>
+            </FlexContainer>
+            <ImgBoxes>
+              {files.length <= 8 && <AddPictureLabel htmlFor="picture">+</AddPictureLabel>}
+              <FileInput id="picture" type="file" accept="img/*" onChange={onLoadFile} multiple />
+              {files.length > 0 &&
+                files.map((file, index) => (
+                  <ImgBox key={uuidv4()}>
+                    <XBtn onClick={() => handleClickDeleteFile(file.src)}>+</XBtn>
+                    <Img src={file.src} alt="preview" />
+                  </ImgBox>
+                ))}
+            </ImgBoxes>
             <Description>{files.length}장 / 최대 8장</Description>
-          </FlexContainer>
-          <ImgBoxes>
-            <AddPictureLabel htmlFor="picture">+</AddPictureLabel>
-            <FileInput id="picture" type="file" accept="img/*" onChange={onLoadFile} multiple />
-            {files.length > 0 &&
-              files.map((file) => (
-                <ImgBox>
-                  <XBtn onClick={() => handleClickDeleteFile(file.src)}>+</XBtn>
-                  <Img src={file.src} alt="preview" key={file.src} />
-                </ImgBox>
-              ))}
-          </ImgBoxes>
-          <Description left={true}>
-            구매한 상품이 아니거나 캡쳐 사진을 첨부할 경우, 통보없이 삭제 및 적립 혜택이 취소됩니다.
-          </Description>
-          <RegisterButton onClick={handleClickRegister}>등록하기</RegisterButton>
+            <Description left={true}>
+              구매한 상품이 아니거나 캡쳐 사진을 첨부할 경우, 통보없이 삭제 및 적립 혜택이 취소됩니다.
+            </Description>
+          </Section>
+          <RegisterButton onClick={handleClickRegister} able={title && content.length > 9}>
+            등록하기
+          </RegisterButton>
         </Form>
       </Wrap>
     </React.Fragment>
@@ -101,6 +131,8 @@ const Form = styled.form`
   gap: ${({ theme }) => theme.usefulUnit.basic};
 `;
 
+const Section = styled.div``;
+
 const ProductName = styled.h1`
   font-size: ${({ theme }) => theme.usefulUnit.basic};
   line-height: ${({ theme }) => theme.usefulUnit.middle};
@@ -109,8 +141,8 @@ const ProductName = styled.h1`
 `;
 
 const Title = styled.h1`
-  margin-top: 1rem;
   font-size: ${({ theme }) => theme.usefulUnit.basic};
+  margin-bottom: 0.5rem;
 `;
 
 const Label = styled.label`
@@ -121,7 +153,7 @@ const Label = styled.label`
 `;
 
 const Input = styled.input`
-  margin-top: ${({ theme }) => theme.usefulUnit.small};
+  margin: ${({ theme }) => theme.usefulUnit.small} 0;
   padding: ${({ theme }) => theme.usefulUnit.small};
   border: 1px solid ${({ theme }) => theme.color.grey};
 `;
@@ -142,17 +174,19 @@ const AddPictureLabel = styled.label`
   font-size: ${({ theme }) => theme.fontSize.big};
   color: ${({ theme }) => theme.color.lightBlue};
   border: 1px solid ${({ theme }) => theme.color.lightBlue};
-  height: 5rem;
-  width: 5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  padding: 1.5rem 2rem;
 `;
 
 const ImgBoxes = styled.div`
   display: flex;
   gap: 1rem;
+  overflow-y: scroll;
+  padding: 1rem 0;
+  ${({ theme }) => theme.common.hideScrollBar}
 `;
 
 const ImgBox = styled.div`
@@ -166,10 +200,10 @@ const Img = styled.img`
 
 const XBtn = styled.button`
   position: absolute;
-  right: -7px;
-  top: -7px;
-  width: 25px;
-  height: 25px;
+  right: -0.5rem;
+  top: -0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
   background-color: white;
   border: 1px solid ${({ theme }) => theme.color.lightBlue};
@@ -185,9 +219,16 @@ const FileInput = styled.input`
 `;
 
 const RegisterButton = styled.button`
-  background-color: ${({ disable, theme }) => (disable ? theme.color.lightGrey : theme.color.black)};
+  background-color: ${({ able, theme }) => (able ? theme.color.black : theme.color.grey)};
   color: ${({ theme }) => theme.color.white};
   padding: ${({ theme }) => theme.usefulUnit.small};
   font-size: ${({ theme }) => theme.usefulUnit.basic};
   margin: ${({ theme }) => theme.usefulUnit.middle} 0;
+  cursor: pointer;
+`;
+
+const ErrorMessage = styled.p`
+  margin-bottom: 0.5rem;
+  color: ${({ theme, fileError }) => (fileError ? theme.color.blue : 'white')};
+  font-size: ${({ theme }) => theme.usefulUnit.small};
 `;
