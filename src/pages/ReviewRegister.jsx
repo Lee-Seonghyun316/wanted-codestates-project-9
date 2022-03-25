@@ -3,9 +3,14 @@ import styled from 'styled-components';
 import SubHeader from '../components/common/SubHeader';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import useLocalStorage from '../hooks/useLocalStorage';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { deleteData } from '../redux/reviews';
+import { useDispatch } from 'react-redux';
 
+const NICKNAME = 'FEDeveloper';
 const ReviewRegister = () => {
-  const navigate = useNavigate();
   const [input, setInput] = useState({
     title: '',
     content: '',
@@ -16,6 +21,10 @@ const ReviewRegister = () => {
     fileError: false,
   });
   const { fileError } = errorMessage;
+  const [stars, setStars] = useState([false, false, false, false, false]);
+  const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleChange = (e) => {
     const { value, id } = e.target;
     setInput({
@@ -31,8 +40,10 @@ const ReviewRegister = () => {
         'Img',
         files.map((file) => file.file)
       );
+      const countStar = stars.filter((element) => true === element).length;
       formData.append('title', title);
       formData.append('content', content);
+      formData.append('star', countStar);
       const config = {
         Headers: {
           'content-type': 'multipart/form-data',
@@ -40,9 +51,21 @@ const ReviewRegister = () => {
       };
       const Data = {
         header: config,
-        data: { title: title, content: content, formData: formData, imgSrc: files.map((file) => file.src) },
+        data: {
+          id: 165186,
+          point: countStar,
+          contents: content,
+          img: files.map((file) => file.src),
+          opt: '사이즈 / 37',
+          regdt: '2022-03-24 17:46:27',
+          nickname: NICKNAME,
+          reviewSize: [{ title: '사이즈는 어떤가요?', txt: '정사이즈에요' }],
+          local: true,
+          title: title,
+          formData: formData,
+        },
       };
-      console.log(Data, 'Data');
+      setLocalReviews([Data, ...localReviews]);
     }
   };
   const onLoadFile = (e) => {
@@ -64,10 +87,21 @@ const ReviewRegister = () => {
     URL.revokeObjectURL(src);
     setFiles((files) => files.filter((file) => file.src !== src));
   };
+  const handleClickStar = (e, index) => {
+    e.preventDefault();
+    const headStars = stars.slice(0, index);
+    const tailStars = stars.slice(index + 1);
+    const value = stars[index] === true ? false : true;
+    setStars([...headStars, value, ...tailStars]);
+  };
+  const handleClickList = async () => {
+    await dispatch(deleteData());
+    navigate('/');
+  };
 
   return (
     <React.Fragment>
-      <SubHeader title="리뷰 작성" onClick={() => navigate('/')} />
+      <SubHeader title="리뷰 작성" onClick={handleClickList} />
       <Wrap>
         <Form>
           <ProductName>[국내/당일] 22SS 생로랑 모노그램 카드지갑 423291</ProductName>
@@ -85,6 +119,16 @@ const ReviewRegister = () => {
               <Input id="content" onChange={handleChange} value={input.content} />
             </Label>
             <Description>{input.content.length}자 / 최소 10자</Description>
+          </Section>
+          <Section>
+            <Title>별점</Title>
+            <Stars>
+              {stars.map((star, index) => (
+                <Star star={star} key={uuidv4()} onClick={(e) => handleClickStar(e, index)}>
+                  <FontAwesomeIcon icon={faStar} />
+                </Star>
+              ))}
+            </Stars>
           </Section>
           <Section>
             <FlexContainer>
@@ -233,4 +277,14 @@ const ErrorMessage = styled.p`
   margin-bottom: 0.5rem;
   color: ${({ theme, fileError }) => (fileError ? theme.color.blue : 'white')};
   font-size: ${({ theme }) => theme.usefulUnit.small};
+`;
+
+const Stars = styled.div`
+  display: flex;
+`;
+
+const Star = styled.button`
+  color: ${({ star, theme }) => (star ? theme.color.blue : theme.color.lightBlue)};
+  font-size: ${({ theme }) => theme.usefulUnit.basic};
+  cursor: pointer;
 `;

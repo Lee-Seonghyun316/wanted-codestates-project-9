@@ -9,67 +9,36 @@ import Head from '../components/common/MainHeader';
 import Filter from '../components/common/Filter';
 import Grid from '../components/Grid';
 import List from '../components/common/List';
-import {
-  addData,
-  addRandomData,
-  deleteData,
-  incrementPage,
-  pageInitialize,
-  randomSort,
-} from '../redux/reviews';
+import { addData, addRandomData, deleteData, incrementPage, pageInitialize, randomSort } from '../redux/reviews';
 import { sortData } from '../data';
 import SortModal from '../components/common/SortModal';
 import ReviewDetail from './ReviewDetail';
 import ShareModal from '../components/common/ShareModal';
 import { useStopScroll } from '../hooks/useStopScroll';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 const ReviewList = () => {
   const [copyId, setCopyId] = useState(null);
   const [current, setCurrent] = useState('list');
   const [index, setIndex] = useState(0);
   const [target, setTarget] = useState(null);
-  const { page, reviews } = useSelector(
-    (state) => ({ page: state.reviews.page, reviews: state.reviews.data }),
-    shallowEqual
-  );
   const [loading, setLoading] = useState(false);
   const [viewType, setViewType] = useState('grid');
   const [sort, setSort] = useState('recent');
   const [sortModal, setSortModal] = useState(false);
   const [shareModal, setShareModal] = useState(false);
-  const dispatch = useDispatch();
+  const { page, reviews } = useSelector(
+    (state) => ({ page: state.reviews.page, reviews: state.reviews.data }),
+    shallowEqual
+  );
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReviewsQuery({
     page: page,
     sort: sort === 'random' ? 'recent' : sort,
   });
-  useEffect(() => {
-    window.onbeforeunload = function pushRefresh() {
-      window.scrollTo(0, 0);
-    };
-  }, []);
-  useEffect(() => {
-    let observer;
-    if (target) {
-      observer = new IntersectionObserver(onIntersect, {
-        threshold: 0.2,
-      });
-      observer.observe(target);
-    }
-    return () => observer && observer.disconnect();
-  }, [target]);
-  useEffect(() => {
-    if (data) {
-      sort === 'random' ? dispatch(addRandomData(data.data)) : dispatch(addData(data.data));
-    }
-  }, [data]);
-  useEffect(() => {
-    if (isLoading) {
-      loadingHandling();
-    }
-  }, [isLoading]);
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [current]);
+  const dispatch = useDispatch();
+  const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
+  const ClientData =
+    reviews && localReviews?.length > 0 ? localReviews.map((review) => review.data).concat(reviews) : reviews;
   const loadingHandling = () => {
     setLoading(true);
     setTimeout(() => {
@@ -129,6 +98,35 @@ const ReviewList = () => {
     setCurrent('detail');
     setIndex(index);
   };
+  useEffect(() => {
+    window.onbeforeunload = function pushRefresh() {
+      window.scrollTo(0, 0);
+    };
+  }, []);
+  useEffect(() => {
+    let observer;
+    if (target) {
+      observer = new IntersectionObserver(onIntersect, {
+        threshold: 0.2,
+      });
+      observer.observe(target);
+    }
+    return () => observer && observer.disconnect();
+  }, [target]);
+  useEffect(() => {
+    console.log('data 61 때문');
+    if (data) {
+      sort === 'random' ? dispatch(addRandomData(data.data)) : dispatch(addData(data.data));
+    }
+  }, [data]);
+  useEffect(() => {
+    if (isLoading) {
+      loadingHandling();
+    }
+  }, [isLoading]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [current]);
   useStopScroll(shareModal);
   useStopScroll(sortModal);
 
@@ -166,7 +164,7 @@ const ReviewList = () => {
           {viewType === 'grid' ? (
             <Grid handleClickDetail={handleClickDetail} />
           ) : (
-            <List data={reviews} setShareModal={setShareModal} setCopyId={setCopyId} />
+            <List data={ClientData} setShareModal={setShareModal} setCopyId={setCopyId} />
           )}
           <InfiniteLoading ref={setTarget}>
             {!loading && isFetching && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}

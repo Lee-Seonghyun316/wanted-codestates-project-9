@@ -45,7 +45,7 @@ const ListItem = ({ review, setShareModal, setCopyId }) => {
           <Activity src="https://i.balaan.io/mobile/img/icon/icon-more.png" />
         </ActivitySet>
       </Activities>
-      <ListImg src={`https://i.balaan.io/review/${review?.img[0]}`} />
+      <ListImg src={review.local ? `${review.img[0]}` : `https://i.balaan.io/review/${review.img[0]}`} />
       <Activities>
         <ActivitySet>
           <Expression>

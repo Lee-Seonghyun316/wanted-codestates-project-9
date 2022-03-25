@@ -11,6 +11,7 @@ import { useGetCertainReviewsQuery } from '../redux/fetchReviews';
 import { addQueryData, deleteQueryData, incrementQueryPage, queryPageInitialize } from '../redux/reviews';
 import { useStopScroll } from '../hooks/useStopScroll';
 import SubHeader from '../components/common/SubHeader';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 const ReviewDetail = ({ index, setCurrent, currentSort }) => {
   const [copyId, setCopyId] = useState();
@@ -25,12 +26,15 @@ const ReviewDetail = ({ index, setCurrent, currentSort }) => {
     }),
     shallowEqual
   );
+  const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
+  const ClientData =
+    reviews && localReviews?.length > 0 ? localReviews.map((review) => review.data).concat(reviews) : reviews;
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetCertainReviewsQuery({
     page: queryPage,
     reviewId: reviewId,
     sort: sort,
   });
-  const slicedReviews = queryData.length > 0 ? queryData : reviews.slice(index);
+  const slicedReviews = queryData.length > 0 ? queryData : ClientData.slice(index);
   const [shareModal, setShareModal] = useState(false);
   const [target, setTarget] = useState(null);
   useEffect(() => {
