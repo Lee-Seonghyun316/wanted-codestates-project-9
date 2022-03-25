@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
 const Grid = ({ handleClickDetail, data }) => {
-
   return (
     <Wrap>
       <GridItems>
@@ -26,7 +25,6 @@ const Wrap = styled.div``;
 
 const GridItems = styled.section`
   display: flex;
-  justify-content: space-around;
   flex-wrap: wrap;
 `;
 
@@ -35,4 +33,5 @@ const Img = styled.img`
   width: 33%;
   height: 11rem;
   object-fit: cover;
+  margin-right: 0.3%;
 `;

@@ -12,13 +12,17 @@ import ShareModal from '../components/ShareModal';
 const WishList = () => {
   const [viewType, setViewType] = useState('grid');
   const [current, setCurrent] = useState('wish');
-  const [wishData, setWishData] = useLocalStorage('wish');
   const [index, setIndex] = useState(0);
   const [copyId, setCopyId] = useState(null);
   const [shareModal, setShareModal] = useState(false);
+  const [wishData, setWishData] = useLocalStorage('wish', []);
   const handleClickDetail = (index) => {
     setCurrent('detail');
     setIndex(index);
+  };
+  const handleClickViewType = (e) => {
+    const value = e.currentTarget.id;
+    setViewType(value);
   };
   useStopScroll(shareModal);
 
@@ -28,16 +32,17 @@ const WishList = () => {
         <div>
           <LogoHeader />
           <Title>리뷰 위시리스트</Title>
-          <ViewChoice />
+          <ViewChoice viewType={viewType} handleClickViewType={handleClickViewType} />
+          {wishData.length === 0 && <Title>좋아요 누른 리뷰 없음:(</Title>}
           {viewType === 'grid' ? (
             <Grid handleClickDetail={handleClickDetail} data={wishData} />
           ) : (
             <List data={wishData} setShareModal={setShareModal} setCopyId={setCopyId} />
           )}
-          {shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} />}
+          {wishData > 0 && shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} />}
         </div>
       )}
-      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} />}
+      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} wish={true} />}
     </div>
   );
 };

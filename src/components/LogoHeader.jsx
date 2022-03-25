@@ -3,20 +3,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBagShopping, faBars, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
-const LogoHeader = () => (
-  <Main>
-    <Icons position="left">
-      <FontAwesomeIcon icon={faBars} />
-      <FontAwesomeIcon icon={faMagnifyingGlass} />
-    </Icons>
-    <Logo src="https://i.balaan.io/mobile/img/icon/ico_logo.png" alt="logo" />
-    <Icons>
-      <FontAwesomeIcon icon={faHeart} />
-      <FontAwesomeIcon icon={faBagShopping} />
-    </Icons>
-  </Main>
-);
+const LogoHeader = () => {
+  const navigate = useNavigate();
+  return (
+    <Main>
+      <Icons position="left">
+        <FontAwesomeIcon icon={faBars} />
+        <FontAwesomeIcon icon={faMagnifyingGlass} />
+      </Icons>
+      <Logo
+        src="https://i.balaan.io/mobile/img/icon/ico_logo.png"
+        alt="logo"
+        onClick={() => navigate('/')}
+        style={{ cursor: 'pointer' }}
+      />
+      <Icons>
+        <FontAwesomeIcon icon={faHeart} onClick={() => navigate('/wish')} style={{ cursor: 'pointer' }} />
+        <FontAwesomeIcon icon={faBagShopping} />
+      </Icons>
+    </Main>
+  );
+};
 
 export default LogoHeader;
 

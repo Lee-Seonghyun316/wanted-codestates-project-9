@@ -13,7 +13,7 @@ import { useStopScroll } from '../hooks/useStopScroll';
 import SubHeader from '../components/SubHeader';
 import useLocalStorage from '../hooks/useLocalStorage';
 
-const ReviewDetail = ({ index, setCurrent, currentSort = 'recent' }) => {
+const ReviewDetail = ({ index, setCurrent, currentSort = 'recent', wish = false }) => {
   const [copyId, setCopyId] = useState();
   const [params] = useSearchParams();
   const reviewId = params.get('review-id');
@@ -27,6 +27,7 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent' }) => {
     shallowEqual
   );
   const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
+  const [wishData, setWishData] = useLocalStorage('wish', []);
   const ClientData =
     reviews && localReviews?.length > 0 ? localReviews.map((review) => review.data).concat(reviews) : reviews;
   const { data, error, isSuccess, isError, isFetching, isLoading } = useGetCertainReviewsQuery({
@@ -34,7 +35,7 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent' }) => {
     reviewId: reviewId,
     sort: sort,
   });
-  const slicedReviews = queryData.length > 0 ? queryData : ClientData.slice(index);
+  const slicedReviews = wish ? wishData.slice(index) : queryData.length > 0 ? queryData : ClientData.slice(index);
   const [shareModal, setShareModal] = useState(false);
   const [target, setTarget] = useState(null);
   useEffect(() => {
@@ -60,13 +61,13 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent' }) => {
   };
   const navigate = useNavigate();
   const handleClickBack = async () => {
-    if (setCurrent) {
+    if (!wish && setCurrent) {
       setCurrent('list');
-    } else {
-      await dispatch(deleteQueryData());
-      await dispatch(queryPageInitialize());
-      navigate('/');
+      return;
     }
+    await dispatch(deleteQueryData());
+    await dispatch(queryPageInitialize());
+    navigate('/');
   };
   useStopScroll(shareModal);
 
@@ -74,9 +75,17 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent' }) => {
     <React.Fragment>
       <SubHeader title="리뷰 상세보기" onClick={handleClickBack} />
       <List>
+        {slicedReviews.length === 0 && <Title>데이터 없음:(</Title>}
         {slicedReviews.map((review) => (
           <Content key={uuidv4()}>
-            <ListItem review={review} key={uuidv4()} setShareModal={setShareModal} setCopyId={setCopyId} />
+            <ListItem
+              review={review}
+              key={uuidv4()}
+              setShareModal={setShareModal}
+              setCopyId={setCopyId}
+              setWishData={setWishData}
+              wishData={wishData}
+            />
             <Comments id={review.id} key={uuidv4()} />
           </Content>
         ))}
@@ -90,6 +99,14 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent' }) => {
 };
 
 export default ReviewDetail;
+
+const Title = styled.h1`
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #000;
+  line-height: 4rem;
+`;
 
 const List = styled.section`
   padding-top: 6rem;
