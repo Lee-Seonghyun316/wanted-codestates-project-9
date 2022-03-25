@@ -6,6 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import ReviewDetail from './pages/ReviewDetail';
 import ReviewList from './pages/ReviewList';
 import ReviewRegister from './pages/ReviewRegister';
+import WishList from './pages/WishList';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<ReviewList />} />
         <Route path="/detail" element={<ReviewDetail />} />
         <Route path="/register" element={<ReviewRegister />} />
+        <Route path="/wish" element={<WishList />} />
       </Routes>
     </ThemeProvider>
   );

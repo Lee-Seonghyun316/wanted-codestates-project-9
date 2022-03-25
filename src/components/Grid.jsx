@@ -1,18 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import useLocalStorage from '../hooks/useLocalStorage';
 
-const Grid = ({ handleClickDetail }) => {
-  const data = useSelector((state) => state.reviews.data);
-  const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
-  const ClientData = data && localReviews?.length > 0 ? localReviews.map((review) => review.data).concat(data) : data;
+const Grid = ({ handleClickDetail, data }) => {
 
   return (
     <Wrap>
       <GridItems>
-        {ClientData.map((data, index) => (
+        {data?.map((data, index) => (
           <Img
             src={data.local ? `${data.img[0]}` : `https://i.balaan.io/review/${data.img[0]}`}
             alt="reviewImg"

@@ -13,7 +13,7 @@ import { useStopScroll } from '../hooks/useStopScroll';
 import SubHeader from '../components/SubHeader';
 import useLocalStorage from '../hooks/useLocalStorage';
 
-const ReviewDetail = ({ index, setCurrent, currentSort }) => {
+const ReviewDetail = ({ index, setCurrent, currentSort = 'recent' }) => {
   const [copyId, setCopyId] = useState();
   const [params] = useSearchParams();
   const reviewId = params.get('review-id');

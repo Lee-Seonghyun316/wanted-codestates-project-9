@@ -16,6 +16,7 @@ import ReviewDetail from './ReviewDetail';
 import ShareModal from '../components/ShareModal';
 import { useStopScroll } from '../hooks/useStopScroll';
 import useLocalStorage from '../hooks/useLocalStorage';
+import ViewChoice from '../components/ViewChoice';
 
 const ReviewList = () => {
   const [copyId, setCopyId] = useState(null);
@@ -152,16 +153,9 @@ const ReviewList = () => {
               <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />
             </LoaderWrap>
           )}
-          <ViewChoice>
-            <ChoiceButton selected={viewType === 'grid'} onClick={handleClickViewType} id="grid">
-              <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-01@2x.png" alt="gird" />
-            </ChoiceButton>
-            <ChoiceButton selected={viewType === 'list'} onClick={handleClickViewType} id="list">
-              <ViewChoiceImg src="https://static.balaan.co.kr/mobile/img/icon/contents/tab-icon-02@2x.png" alt="list" />
-            </ChoiceButton>
-          </ViewChoice>
+          <ViewChoice viewType={viewType} handleClickViewType={handleClickViewType} />
           {viewType === 'grid' ? (
-            <Grid handleClickDetail={handleClickDetail} />
+            <Grid handleClickDetail={handleClickDetail} data={ClientData} />
           ) : (
             <List data={ClientData} setShareModal={setShareModal} setCopyId={setCopyId} />
           )}
@@ -187,10 +181,6 @@ const ReviewList = () => {
 export default ReviewList;
 
 const Wrap = styled.div``;
-
-const ReviewListContainer = styled.div`
-  ${({ modalVisible }) => modalVisible && 'position:fixed;width:100%;height:100%;overflow:hidden;'};
-`;
 
 const LoaderWrap = styled.div`
   position: fixed;
@@ -245,22 +235,6 @@ const Refresh = styled.button`
   color: ${({ theme }) => theme.color.grey};
   font-size: ${({ theme }) => theme.fontSize.xSmall};
   cursor: pointer;
-`;
-
-const ViewChoice = styled.div`
-  width: 100%;
-`;
-
-const ChoiceButton = styled.button`
-  padding: 1rem 0;
-  width: 50%;
-  border-bottom: 2px solid ${({ theme }) => theme.color.black};
-  opacity: ${({ selected }) => (selected ? 1 : 0.3)};
-  cursor: pointer;
-`;
-
-const ViewChoiceImg = styled.img`
-  width: 2rem;
 `;
 
 const InfiniteLoading = styled.div`
