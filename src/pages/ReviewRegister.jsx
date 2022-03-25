@@ -18,7 +18,7 @@ const ReviewRegister = () => {
   const { title, content } = input;
   const [files, setFiles] = useState([]);
   const [errorMessage, setErrorMessage] = useState({
-    fileError: false,
+    fileError: '',
   });
   const { fileError } = errorMessage;
   const [stars, setStars] = useState([false, false, false, false, false]);
@@ -70,15 +70,20 @@ const ReviewRegister = () => {
   };
   const onLoadFile = (e) => {
     const newFiles = e.target.files;
+    for (let i = 0; i < newFiles.length; i++) {
+      if (!fileCheck(newFiles[i].name)) {
+        return;
+      }
+    }
     let newUrls = [];
     for (let i = 0; i < newFiles.length; i++) {
       newUrls.push({ file: newFiles[i], src: URL.createObjectURL(newFiles[i]) });
     }
     if (newUrls.length + files.length > 9) {
-      setErrorMessage({ ...errorMessage, fileError: true });
+      setErrorMessage({ ...errorMessage, fileError: '8장 이상 등록불가:(' });
       setTimeout(() => {
-        setErrorMessage({ ...errorMessage, fileError: false });
-      }, 1500);
+        setErrorMessage({ ...errorMessage, fileError: '' });
+      }, 2000);
       return;
     }
     setFiles([...files, ...newUrls]);
@@ -97,6 +102,20 @@ const ReviewRegister = () => {
   const handleClickList = async () => {
     await dispatch(deleteData());
     navigate('/');
+  };
+  const fileCheck = (fileName) => {
+    const pathPoint = fileName.lastIndexOf('.');
+    const filePoint = fileName.substring(pathPoint + 1, fileName.length);
+    const fileType = filePoint.toLowerCase();
+    if (fileType === 'jpg' || fileType === 'png' || fileType === 'jpeg') {
+      return true;
+    } else {
+      setErrorMessage({ ...errorMessage, fileError: `${fileType} 파일 등록 불가:(` });
+      setTimeout(() => {
+        setErrorMessage({ ...errorMessage, fileError: '' });
+      }, 2000);
+      return false;
+    }
   };
 
   return (
@@ -133,7 +152,7 @@ const ReviewRegister = () => {
           <Section>
             <FlexContainer>
               <Title>
-                <ErrorMessage fileError={fileError}>8장 이상 등록불가:(</ErrorMessage>
+                <ErrorMessage fileError={fileError}>{fileError}</ErrorMessage>
                 사진 등록
               </Title>
             </FlexContainer>

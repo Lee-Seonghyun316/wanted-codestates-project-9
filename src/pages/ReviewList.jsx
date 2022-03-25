@@ -114,7 +114,6 @@ const ReviewList = () => {
     return () => observer && observer.disconnect();
   }, [target]);
   useEffect(() => {
-    console.log('data 61 때문');
     if (data) {
       sort === 'random' ? dispatch(addRandomData(data.data)) : dispatch(addData(data.data));
     }
