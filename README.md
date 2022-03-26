@@ -1,5 +1,5 @@
 ## 배포링크
-https://vercel.com/mn031621019-gmailcom/wanted-codestates-project-9
+https://wanted-codestates-project-9-kappa.vercel.app/
 
 pc로 접속하는 경우, chrome 브라우저에서 f12 로 개발자도구를 열고, 모바일화면으로(ex: IPhone12pro 390*844) 확인합니다. 
 
