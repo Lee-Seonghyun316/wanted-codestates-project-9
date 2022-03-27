@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import LogoHeader from '../components/LogoHeader';
 import ViewChoice from '../components/ViewChoice';
@@ -20,10 +20,10 @@ const WishList = () => {
     setCurrent('detail');
     setId(id);
   };
-  const handleClickViewType = (e) => {
+  const handleClickViewType = useCallback((e) => {
     const value = e.currentTarget.id;
     setViewType(value);
-  };
+  }, []);
   useStopScroll(shareModal);
 
   return (

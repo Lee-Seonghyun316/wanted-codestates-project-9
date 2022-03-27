@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
@@ -35,15 +35,15 @@ const ReviewDetail = ({ id, setCurrent, currentSort = 'recent', wish = false }) 
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleClickBack = async () => {
+  const handleClickBack = useCallback(async () => {
+    await dispatch(deleteQueryData());
+    await dispatch(queryPageInitialize());
     if (!wish && setCurrent) {
       setCurrent('list');
       return;
     }
-    await dispatch(deleteQueryData());
-    await dispatch(queryPageInitialize());
     navigate('/');
-  };
+  }, [dispatch, navigate, setCurrent, wish]);
   useStopScroll(shareModal);
   useEffect(() => {
     if (data) {
@@ -52,7 +52,7 @@ const ReviewDetail = ({ id, setCurrent, currentSort = 'recent', wish = false }) 
   }, [data, dispatch]);
   useEffect(() => {
     const onIntersect = async ([entry], observer) => {
-      if (entry.isIntersecting) {
+      if (entry.isIntersecting && !isFetching) {
         await dispatch(incrementQueryPage());
       }
     };
@@ -64,24 +64,22 @@ const ReviewDetail = ({ id, setCurrent, currentSort = 'recent', wish = false }) 
       observer.observe(target);
     }
     return () => observer && observer.disconnect();
-  }, [target, dispatch]);
+  }, [target, dispatch, isFetching]);
 
   return (
     <Wrap>
       <SubHeader title="리뷰 상세보기" onClick={handleClickBack} />
       <List>
-        {queryData.length === 0 && <Title>데이터 없음:(</Title>}
         {queryData.map((review) => (
           <Content key={uuidv4()}>
             <ListItem
               review={review}
-              key={uuidv4()}
               setShareModal={setShareModal}
               setCopyId={setCopyId}
               setWishData={setWishData}
               wishDataIds={wishData.map((data) => data.id)}
             />
-            <Comments id={review.id} key={uuidv4()} />
+            <Comments id={review.id} />
           </Content>
         ))}
       </List>
@@ -111,14 +109,6 @@ export default ReviewDetail;
 const Wrap = styled.main`
   max-width: ${({ theme }) => theme.maxWidth};
   margin: auto;
-`;
-
-const Title = styled.h1`
-  text-align: center;
-  font-size: 1.6rem;
-  font-weight: 500;
-  color: #000;
-  line-height: 4rem;
 `;
 
 const List = styled.section`

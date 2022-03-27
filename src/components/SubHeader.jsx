@@ -23,7 +23,7 @@ SubHeader.defaultProps = {
   title: '',
 };
 
-export default SubHeader;
+export default React.memo(SubHeader);
 
 const Head = styled.header`
   position: fixed;

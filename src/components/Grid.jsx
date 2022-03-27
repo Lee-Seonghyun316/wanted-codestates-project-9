@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 
 const Grid = ({ handleClickDetail, data }) => {
-  const webpSrcSet = (src) => {
+  const webpSrcSet = useCallback((src) => {
     if (src.includes('.jpeg')) {
       return src.replace('.jpeg', '.webp');
     }
@@ -15,7 +15,7 @@ const Grid = ({ handleClickDetail, data }) => {
       return src.replace('.png', '.webp');
     }
     return src;
-  };
+  }, []);
   return (
     <Wrap>
       <GridItems>

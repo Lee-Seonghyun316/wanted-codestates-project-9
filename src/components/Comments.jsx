@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useGetReplyQuery } from '../redux/fetchReply';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,7 +12,7 @@ const Comments = ({ id }) => {
   const [currentIndex, setDeepIndex] = useState(null);
   const [fixed, setFixed] = useState(false);
   const { data } = useGetReplyQuery(id);
-  const makeTimeGap = (startTime) => {
+  const makeTimeGap = useCallback((startTime) => {
     const milliSeconds = Date.now() - startTime;
     const minutes = milliSeconds / 60000;
     const hours = minutes / 60;
@@ -28,33 +28,39 @@ const Comments = ({ id }) => {
       return `${parseInt(hours)}시간`;
     }
     return minutes < 1 ? '지금' : `${parseInt(minutes)}분`;
-  };
-  const newComment = (e, depth, value) => {
-    if (value === '') {
-      return;
-    }
-    e.preventDefault();
-    const newComment = {
-      nickname: NICKNAME,
-      id: uuidv4(),
-      depth: depth,
-      contents: value,
-      registration_time: Date.now(),
-    };
-    depth === 0 && setComments((comments) => [...comments, newComment]);
-    if (currentIndex !== null) {
+  }, []);
+  const newComment = useCallback(
+    (e, depth, value) => {
+      if (value === '') {
+        return;
+      }
+      e.preventDefault();
       const newComment = {
         nickname: NICKNAME,
         id: uuidv4(),
         depth: depth,
         contents: value,
         registration_time: Date.now(),
-        target_nickname: comments[currentIndex].nickname,
       };
-      const headArray = comments.slice(0, currentIndex + 1);
-      const tailArray = comments.slice(currentIndex + 1);
-      setComments(headArray.concat(newComment, tailArray));
-    }
+      depth === 0 && setComments((comments) => [...comments, newComment]);
+      if (currentIndex !== null) {
+        const newComment = {
+          nickname: NICKNAME,
+          id: uuidv4(),
+          depth: depth,
+          contents: value,
+          registration_time: Date.now(),
+          target_nickname: comments[currentIndex].nickname,
+        };
+        const headArray = comments.slice(0, currentIndex + 1);
+        const tailArray = comments.slice(currentIndex + 1);
+        setComments(headArray.concat(newComment, tailArray));
+      }
+    },
+    [comments, currentIndex]
+  );
+  const handleClickCancelComment = () => {
+    setDeepIndex(null);
   };
   const fixComment = (e, depth, value) => {
     e.preventDefault();
@@ -77,9 +83,6 @@ const Comments = ({ id }) => {
   };
   const handleClickDeepComment = (index) => {
     setDeepIndex(index);
-  };
-  const handleClickCancelComment = () => {
-    setDeepIndex(null);
   };
   const handleClickFixed = (index) => {
     setFixed(true);

@@ -22,7 +22,7 @@ ViewChoice.defaultProps = {
   viewType: '',
 };
 
-export default ViewChoice;
+export default React.memo(ViewChoice);
 
 const Wrap = styled.div`
   width: 100%;

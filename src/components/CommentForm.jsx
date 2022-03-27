@@ -63,7 +63,6 @@ const Input = styled.input`
 const Posting = styled.button`
   border-radius: 0 4rem 4rem 0;
   width: 7rem;
-  cursor: pointer;
   background: #fff !important;
   border: 1px solid #ddd;
   padding: 1rem 2rem 1rem;

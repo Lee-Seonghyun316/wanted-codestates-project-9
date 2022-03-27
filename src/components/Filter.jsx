@@ -24,7 +24,7 @@ Filter.defaultProps = {
   type: '',
 };
 
-export default Filter;
+export default React.memo(Filter);
 
 const Wrap = styled.button`
   display: flex;

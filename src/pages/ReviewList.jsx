@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
@@ -20,7 +20,7 @@ import ViewChoice from '../components/ViewChoice';
 const ReviewList = () => {
   const [copyId, setCopyId] = useState(null);
   const [current, setCurrent] = useState('list');
-  const [Id, setId] = useState();
+  const [id, setId] = useState();
   const [target, setTarget] = useState(null);
   const [loading, setLoading] = useState(false);
   const [viewType, setViewType] = useState('grid');
@@ -42,15 +42,16 @@ const ReviewList = () => {
       setLoading(false);
     }, 1500);
   };
-  const handleClickViewType = (e) => {
+  const handleClickViewType = useCallback((e) => {
     const value = e.currentTarget.id;
     setViewType(value);
-  };
+  }, []);
   const handleClickSortType = async (e) => {
     const value = e.currentTarget.id;
     await setSort(value);
     if (value === 'random') {
-      dispatch(randomSort());
+      await dispatch(randomSort());
+      await dispatch(incrementPage());
       return;
     }
     await dispatch(deleteData());
@@ -83,9 +84,9 @@ const ReviewList = () => {
     closeModal();
     loadingHandling();
   };
-  const handleClickSort = () => {
+  const handleClickSort = useCallback(() => {
     setSortModal(true);
-  };
+  }, []);
   const handleClickDetail = (id) => {
     setCurrent('detail');
     setId(id);
@@ -169,7 +170,7 @@ const ReviewList = () => {
           {shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} sort={sort} />}
         </div>
       )}
-      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} id={Id} currentSort={sort} />}
+      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} id={id} currentSort={sort} />}
     </Wrap>
   );
 };
