@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 
-const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishData }) => {
+const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishDataIds }) => {
   const renderStar = (point) => {
     const pointArr = [];
     for (let i = 0; i < point; i++) {
@@ -28,12 +28,12 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishData }) =
       </Questions>
     );
   };
-  const handleClickLike = (wish) => {
-    if (wishData.includes(wish)) {
-      setWishData(wishData.filter((data) => data !== wish));
+  const handleClickLike = (id, review) => {
+    if (wishDataIds.includes(id)) {
+      setWishData((wishData) => wishData.filter((data) => data.id !== id));
       return;
     }
-    setWishData(wishData.concat([wish]));
+    setWishData((wishData) => wishData.concat([review]));
   };
   const handleClickShare = (id) => {
     setShareModal(true);
@@ -62,11 +62,8 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishData }) =
         </ActivitySet>
       </Activities>
       <picture key={uuidv4()}>
-        <source
-          srcSet={review.local ? `${review.img[0]}` : `https://i.balaan.io/review/${webpSrcSet(review.img[0])}`}
-          type="image/webp"
-        />
-        <Img src={review.local ? `${review.img[0]}` : `https://i.balaan.io/review/${review.img[0]}`} alt="reviewImg" />
+        <source srcSet={`https://i.balaan.io/review/${webpSrcSet(review.img[0])}`} type="image/webp" />
+        <Img src={`https://i.balaan.io/review/${review.img[0]}`} alt="reviewImg" />
       </picture>
       <Activities>
         <ActivitySet>
@@ -78,8 +75,8 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishData }) =
             onClick={() => handleClickShare(review.id)}
           />
         </ActivitySet>
-        <Expression like={wishData.includes(review)}>
-          <FontAwesomeIcon icon={faHeart} onClick={() => handleClickLike(review)} />
+        <Expression like={wishDataIds.includes(review.id)}>
+          <FontAwesomeIcon icon={faHeart} onClick={() => handleClickLike(review.id, review)} />
         </Expression>
       </Activities>
       <StarCore>{renderStar(review?.point)}</StarCore>
@@ -100,12 +97,12 @@ ListItem.propTypes = {
   setShareModal: PropTypes.func,
   setCopyId: PropTypes.func,
   setWishData: PropTypes.func,
-  wishData: PropTypes.array,
+  wishDataIds: PropTypes.array,
 };
 
 ListItem.defaultProps = {
   review: {},
-  wishData: null,
+  wishDataIds: null,
 };
 
 export default ListItem;

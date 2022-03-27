@@ -15,13 +15,12 @@ import SortModal from '../components/SortModal';
 import ReviewDetail from './ReviewDetail';
 import ShareModal from '../components/ShareModal';
 import { useStopScroll } from '../hooks/useStopScroll';
-import useLocalStorage from '../hooks/useLocalStorage';
 import ViewChoice from '../components/ViewChoice';
 
 const ReviewList = () => {
   const [copyId, setCopyId] = useState(null);
   const [current, setCurrent] = useState('list');
-  const [index, setIndex] = useState(0);
+  const [Id, setId] = useState();
   const [target, setTarget] = useState(null);
   const [loading, setLoading] = useState(false);
   const [viewType, setViewType] = useState('grid');
@@ -37,9 +36,6 @@ const ReviewList = () => {
     sort: sort === 'random' ? 'recent' : sort,
   });
   const dispatch = useDispatch();
-  const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
-  const ClientData =
-    reviews && localReviews?.length > 0 ? localReviews.map((review) => review.data).concat(reviews) : reviews;
   const loadingHandling = () => {
     setLoading(true);
     setTimeout(() => {
@@ -90,9 +86,9 @@ const ReviewList = () => {
   const handleClickSort = () => {
     setSortModal(true);
   };
-  const handleClickDetail = (index) => {
+  const handleClickDetail = (id) => {
     setCurrent('detail');
-    setIndex(index);
+    setId(id);
   };
   useEffect(() => {
     window.onbeforeunload = function pushRefresh() {
@@ -118,7 +114,7 @@ const ReviewList = () => {
     if (data) {
       sort === 'random' ? dispatch(addRandomData(data.data)) : dispatch(addData(data.data));
     }
-  }, [data, dispatch, sort]);
+  }, [data]);
   useEffect(() => {
     if (isLoading) {
       loadingHandling();
@@ -155,9 +151,9 @@ const ReviewList = () => {
           )}
           <ViewChoice viewType={viewType} handleClickViewType={handleClickViewType} />
           {viewType === 'grid' ? (
-            <Grid handleClickDetail={handleClickDetail} data={ClientData} />
+            <Grid handleClickDetail={handleClickDetail} data={reviews} />
           ) : (
-            <List data={ClientData} setShareModal={setShareModal} setCopyId={setCopyId} />
+            <List data={reviews} setShareModal={setShareModal} setCopyId={setCopyId} />
           )}
           <InfiniteLoading ref={setTarget}>
             {!loading && isFetching && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
@@ -173,14 +169,17 @@ const ReviewList = () => {
           {shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} sort={sort} />}
         </div>
       )}
-      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} currentSort={sort} />}
+      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} id={Id} currentSort={sort} />}
     </Wrap>
   );
 };
 
 export default ReviewList;
 
-const Wrap = styled.div``;
+const Wrap = styled.div`
+  max-width: ${({ theme }) => theme.maxWidth};
+  margin: auto;
+`;
 
 const LoaderWrap = styled.div`
   position: fixed;

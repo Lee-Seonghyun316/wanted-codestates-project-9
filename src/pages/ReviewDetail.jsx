@@ -11,34 +11,28 @@ import { useGetCertainReviewsQuery } from '../redux/fetchReviews';
 import { addQueryData, deleteQueryData, incrementQueryPage, queryPageInitialize } from '../redux/reviews';
 import { useStopScroll } from '../hooks/useStopScroll';
 import SubHeader from '../components/SubHeader';
-import useLocalStorage from '../hooks/useLocalStorage';
+import useSessionStorage from '../hooks/useSessionStorage';
 import PropTypes from 'prop-types';
 import Filter from '../components/Filter';
 
-const ReviewDetail = ({ index, setCurrent, currentSort = 'recent', wish = false }) => {
+const ReviewDetail = ({ id, setCurrent, currentSort = 'recent', wish = false }) => {
   const [copyId, setCopyId] = useState();
   const [target, setTarget] = useState(null);
   const [shareModal, setShareModal] = useState(false);
   const [params] = useSearchParams();
-  const reviewId = params.get('review-id');
-  const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
-  const [wishData, setWishData] = useLocalStorage('wish', []);
-  const { queryPage, queryData, reviews } = useSelector(
+  const [wishData, setWishData] = useSessionStorage('wish', []);
+  const { queryPage, queryData } = useSelector(
     (state) => ({
       queryPage: state.reviews.queryPage,
-      reviews: state.reviews.data,
       queryData: state.reviews.queryData,
     }),
     shallowEqual
   );
-  const ClientData =
-    reviews && localReviews?.length > 0 ? localReviews.map((review) => review.data).concat(reviews) : reviews;
   const { data, isFetching } = useGetCertainReviewsQuery({
     page: queryPage,
-    reviewId: reviewId,
+    reviewId: params.get('review-id') || id,
     sort: params.get('sort') || currentSort,
   });
-  const slicedReviews = wish ? wishData.slice(index) : queryData.length > 0 ? queryData : ClientData.slice(index);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleClickBack = async () => {
@@ -73,11 +67,11 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent', wish = false 
   }, [target, dispatch]);
 
   return (
-    <React.Fragment>
+    <Wrap>
       <SubHeader title="리뷰 상세보기" onClick={handleClickBack} />
       <List>
-        {slicedReviews.length === 0 && <Title>데이터 없음:(</Title>}
-        {slicedReviews.map((review) => (
+        {queryData.length === 0 && <Title>데이터 없음:(</Title>}
+        {queryData.map((review) => (
           <Content key={uuidv4()}>
             <ListItem
               review={review}
@@ -85,7 +79,7 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent', wish = false 
               setShareModal={setShareModal}
               setCopyId={setCopyId}
               setWishData={setWishData}
-              wishData={wishData}
+              wishDataIds={wishData.map((data) => data.id)}
             />
             <Comments id={review.id} key={uuidv4()} />
           </Content>
@@ -95,7 +89,7 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent', wish = false 
         {isFetching && <ReactLoading type="spin" color="#000" width="3rem" height="3rem" />}
       </InfiniteLoading>
       {shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} sort={currentSort} />}
-    </React.Fragment>
+    </Wrap>
   );
 };
 
@@ -113,6 +107,11 @@ Filter.defaultProps = {
 };
 
 export default ReviewDetail;
+
+const Wrap = styled.main`
+  max-width: ${({ theme }) => theme.maxWidth};
+  margin: auto;
+`;
 
 const Title = styled.h1`
   text-align: center;

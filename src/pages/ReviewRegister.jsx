@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import SubHeader from '../components/SubHeader';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
-import useLocalStorage from '../hooks/useLocalStorage';
+import useSessionStorage from '../hooks/useSessionStorage';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { deleteData } from '../redux/reviews';
@@ -25,7 +25,7 @@ const ReviewRegister = () => {
   const [stars, setStars] = useState([false, false, false, false, false]);
   const [loading, setLoading] = useState(false);
   const [registerText, setRegisterText] = useState('등록하기');
-  const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
+  const [localReviews, setLocalReviews] = useSessionStorage('localReviews', []);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleChange = (e) => {
@@ -55,16 +55,17 @@ const ReviewRegister = () => {
       const Data = {
         header: config,
         data: {
+          //임시 데이터
           id: 165186,
-          point: countStar,
-          contents: content,
-          img: files.map((file) => file.src),
           opt: '사이즈 / 37',
           regdt: '2022-03-24 17:46:27',
-          nickname: NICKNAME,
           reviewSize: [{ title: '사이즈는 어떤가요?', txt: '정사이즈에요' }],
-          local: true,
+          img: files.map((file) => file.src),
+          //폼 입력 데이터
+          nickname: NICKNAME,
           title: title,
+          contents: content,
+          point: countStar,
           formData: formData,
         },
       };
@@ -131,9 +132,9 @@ const ReviewRegister = () => {
   };
 
   return (
-    <React.Fragment>
+    <Wrap>
       <SubHeader title="리뷰 작성" onClick={handleClickList} />
-      <Wrap>
+      <FormContainer>
         <Form>
           <ProductName>[국내/당일] 22SS 생로랑 모노그램 카드지갑 423291</ProductName>
           <Section>
@@ -191,14 +192,19 @@ const ReviewRegister = () => {
             {loading ? <ReactLoading type="spin" color="#fff" width="1.5rem" height="1.5rem" /> : registerText}
           </RegisterButton>
         </Form>
-      </Wrap>
-    </React.Fragment>
+      </FormContainer>
+    </Wrap>
   );
 };
 
 export default ReviewRegister;
 
-const Wrap = styled.section`
+const Wrap = styled.div`
+  max-width: ${({ theme }) => theme.maxWidth};
+  margin: auto;
+`;
+
+const FormContainer = styled.section`
   padding-top: 7rem;
   background-color: ${({ theme }) => theme.color.lightGrey};
 `;

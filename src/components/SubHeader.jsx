@@ -32,6 +32,7 @@ const Head = styled.header`
   top: 0;
   box-shadow: 0 0 3px 0 #ccc;
   width: 100%;
+  max-width: ${({ theme }) => theme.maxWidth};
   background: #fff;
   z-index: 8;
   display: flex;
