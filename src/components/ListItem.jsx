@@ -38,6 +38,17 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishData }) =
     setShareModal(true);
     setCopyId(id);
   };
+  const webpSrcSet = (src) => {
+    if (src.includes('.jpeg')) {
+      return src.replace('.jpeg', '.webp');
+    }
+    if (src.includes('.jpg')) {
+      return src.replace('.jpg', '.webp');
+    }
+    if (src.includes('.png')) {
+      return src.replace('.png', '.webp');
+    }
+  };
 
   return (
     <div key={review.id}>
@@ -48,7 +59,13 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishData }) =
           <Activity src="https://i.balaan.io/mobile/img/icon/icon-more.png" />
         </ActivitySet>
       </Activities>
-      <ListImg src={review.local ? `${review.img[0]}` : `https://i.balaan.io/review/${review.img[0]}`} />
+      <picture key={uuidv4()}>
+        <source
+          srcSet={review.local ? `${review.img[0]}` : `https://i.balaan.io/review/${webpSrcSet(review.img[0])}`}
+          type="image/webp"
+        />
+        <Img src={review.local ? `${review.img[0]}` : `https://i.balaan.io/review/${review.img[0]}`} alt="reviewImg" />
+      </picture>
       <Activities>
         <ActivitySet>
           <Expression>
@@ -100,7 +117,7 @@ const DateText = styled.p`
   color: #999;
 `;
 
-const ListImg = styled.img`
+const Img = styled.img`
   max-width: 100%;
 `;
 
