@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { addData, deleteData } from '../redux/reviews';
 import { useDispatch } from 'react-redux';
 import ReactLoading from 'react-loading';
+import useSessionStorage from '../hooks/useSessionStorage';
 
 const NICKNAME = 'FEDeveloper';
 const ReviewRegister = () => {
@@ -24,6 +25,7 @@ const ReviewRegister = () => {
   const [stars, setStars] = useState([false, false, false, false, false]);
   const [loading, setLoading] = useState(false);
   const [registerText, setRegisterText] = useState('등록하기');
+  const [registers, setRegisters] = useSessionStorage('registers', []);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleChange = (e) => {
@@ -64,6 +66,7 @@ const ReviewRegister = () => {
       };
       await dispatch(deleteData());
       await dispatch(addData([newData]));
+      await setRegisters((registers) => [[newData], ...registers]);
       setLoading(true);
       setTimeout(() => {
         setLoading(false);

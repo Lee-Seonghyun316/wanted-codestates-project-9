@@ -4,8 +4,10 @@ import { faHeart, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import styled, { css } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishDataIds }) => {
+  const queryData = useSelector((state) => state.reviews.queryData);
   const renderStar = (point) => {
     const pointArr = [];
     for (let i = 0; i < point; i++) {
@@ -54,6 +56,15 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishDataIds }
     }
     return src;
   };
+  const decideLike = () => {
+    if (!wishDataIds.includes(review.id)) {
+      return;
+    }
+    if (queryData.filter((data) => data.id === review.id).length > 1) {
+      return review.local;
+    }
+    return true;
+  };
 
   return (
     <div key={review.id}>
@@ -83,7 +94,7 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishDataIds }
             onClick={() => handleClickShare(review.id, review.local)}
           />
         </ActivitySet>
-        <Expression like={wishDataIds.includes(review.id)}>
+        <Expression like={decideLike()}>
           <FontAwesomeIcon icon={faHeart} onClick={() => handleClickLike(review.id, review)} />
         </Expression>
       </Activities>

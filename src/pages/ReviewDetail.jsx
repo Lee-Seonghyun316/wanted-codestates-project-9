@@ -21,8 +21,9 @@ const ReviewDetail = ({ id, setCurrent, currentSort = 'recent', wish = false }) 
   const [shareModal, setShareModal] = useState(false);
   const [params] = useSearchParams();
   const [wishData, setWishData] = useSessionStorage('wish', []);
-  const { queryPage, queryData } = useSelector(
+  const { reviews, queryPage, queryData } = useSelector(
     (state) => ({
+      reviews: state.reviews.data,
       queryPage: state.reviews.queryPage,
       queryData: state.reviews.queryData,
     }),
@@ -45,6 +46,16 @@ const ReviewDetail = ({ id, setCurrent, currentSort = 'recent', wish = false }) 
     navigate('/');
   }, [dispatch, navigate, setCurrent, wish]);
   useStopScroll(shareModal);
+  useEffect(() => {
+    const localData = reviews.filter((review) => review.local === true);
+    if (localData.length > 0) {
+      console.log(
+        localData.filter((data) => data.id === id),
+        '추가'
+      );
+      dispatch(addQueryData(localData.filter((data) => data.id === id)));
+    }
+  }, [id, reviews]);
   useEffect(() => {
     if (data) {
       dispatch(addQueryData(data.data));
@@ -92,14 +103,14 @@ const ReviewDetail = ({ id, setCurrent, currentSort = 'recent', wish = false }) 
 };
 
 Filter.propTypes = {
-  index: PropTypes.number,
+  id: PropTypes.number,
   setCurrent: PropTypes.func,
   currentSort: PropTypes.string,
   wish: PropTypes.bool,
 };
 
 Filter.defaultProps = {
-  index: null,
+  id: null,
   currentSort: 'recent',
   wish: false,
 };
