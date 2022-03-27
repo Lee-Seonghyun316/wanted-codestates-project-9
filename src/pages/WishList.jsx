@@ -5,20 +5,20 @@ import ViewChoice from '../components/ViewChoice';
 import Grid from '../components/Grid';
 import List from '../components/List';
 import ReviewDetail from './ReviewDetail';
-import useLocalStorage from '../hooks/useLocalStorage';
+import useSessionStorage from '../hooks/useSessionStorage';
 import { useStopScroll } from '../hooks/useStopScroll';
 import ShareModal from '../components/ShareModal';
 
 const WishList = () => {
   const [viewType, setViewType] = useState('grid');
   const [current, setCurrent] = useState('wish');
-  const [index, setIndex] = useState(0);
+  const [id, setId] = useState();
   const [copyId, setCopyId] = useState(null);
   const [shareModal, setShareModal] = useState(false);
-  const [wishData, setWishData] = useLocalStorage('wish', []);
-  const handleClickDetail = (index) => {
+  const [wishData, setWishData] = useSessionStorage('wish', []);
+  const handleClickDetail = (id) => {
     setCurrent('detail');
-    setIndex(index);
+    setId(id);
   };
   const handleClickViewType = (e) => {
     const value = e.currentTarget.id;
@@ -27,7 +27,7 @@ const WishList = () => {
   useStopScroll(shareModal);
 
   return (
-    <div>
+    <Wrap>
       {current === 'wish' && (
         <div>
           <LogoHeader />
@@ -42,12 +42,17 @@ const WishList = () => {
           {wishData > 0 && shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} />}
         </div>
       )}
-      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} index={index} wish={true} />}
-    </div>
+      {current === 'detail' && <ReviewDetail setCurrent={setCurrent} id={id} wish={true} />}
+    </Wrap>
   );
 };
 
 export default WishList;
+
+const Wrap = styled.main`
+  max-width: ${({ theme }) => theme.maxWidth};
+  margin: auto;
+`;
 
 const Title = styled.h1`
   text-align: center;

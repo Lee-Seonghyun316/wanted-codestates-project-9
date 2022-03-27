@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import BlackOut from './BlackOut';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import PropTypes from 'prop-types';
 
 const ROOT_URL = 'https://wanted-codestates-project-9-kappa.vercel.app/';
 
 const ShareModal = ({ setShareModal, reviewId, sort = 'recent' }) => {
   const [copy, setCopy] = useState(false);
+  const filteringSort = sort ? sort : 'recent';
+  const shareUrl = `${ROOT_URL}detail?review-id=${reviewId}&sort=${filteringSort}`;
   let timeout;
   const handleClick = () => {
     setCopy(true);
@@ -14,14 +17,13 @@ const ShareModal = ({ setShareModal, reviewId, sort = 'recent' }) => {
       setCopy(false);
     }, 1500);
   };
-  useEffect(() => {
-    return () => clearTimeout(timeout);
-  }, []);
-  const filteringSort = sort ? sort : 'recent';
-  const shareUrl = `${ROOT_URL}detail?review-id=${reviewId}&sort=${filteringSort}`;
   const closeModal = () => {
     setShareModal(false);
   };
+  useEffect(() => {
+    return () => clearTimeout(timeout);
+  }, [timeout]);
+
   return (
     <Wrap top={window.scrollY}>
       {copy && <Message>링크 복사 완료:)</Message>}
@@ -35,6 +37,17 @@ const ShareModal = ({ setShareModal, reviewId, sort = 'recent' }) => {
       </Content>
     </Wrap>
   );
+};
+
+ShareModal.propTypes = {
+  setShareModal: PropTypes.func,
+  reviewId: PropTypes.number,
+  sort: PropTypes.string,
+};
+
+ShareModal.defaultProps = {
+  reviewId: null,
+  sort: 'recent',
 };
 
 export default ShareModal;

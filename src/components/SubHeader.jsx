@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const SubHeader = ({ onClick, title }) => (
   <Head>
@@ -13,6 +14,15 @@ const SubHeader = ({ onClick, title }) => (
   </Head>
 );
 
+SubHeader.propTypes = {
+  onClick: PropTypes.func,
+  title: PropTypes.string,
+};
+
+SubHeader.defaultProps = {
+  title: '',
+};
+
 export default SubHeader;
 
 const Head = styled.header`
@@ -22,6 +32,7 @@ const Head = styled.header`
   top: 0;
   box-shadow: 0 0 3px 0 #ccc;
   width: 100%;
+  max-width: ${({ theme }) => theme.maxWidth};
   background: #fff;
   z-index: 8;
   display: flex;

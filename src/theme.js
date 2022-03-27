@@ -63,12 +63,15 @@ const usefulUnit = {
   middle: '2rem',
 };
 
+const maxWidth = '800px';
+
 const theme = {
   fontSize,
   color,
   common,
   device,
   usefulUnit,
+  maxWidth,
 };
 
 export default theme;

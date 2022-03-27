@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
+import PropTypes from 'prop-types';
 
 const Grid = ({ handleClickDetail, data }) => {
   const webpSrcSet = (src) => {
@@ -13,22 +14,28 @@ const Grid = ({ handleClickDetail, data }) => {
     if (src.includes('.png')) {
       return src.replace('.png', '.webp');
     }
+    return src;
   };
   return (
     <Wrap>
       <GridItems>
-        {data?.map((data, index) => (
-          <Picture key={uuidv4()} onClick={() => handleClickDetail(index)}>
-            <source
-              srcSet={data.local ? `${data.img[0]}` : `https://i.balaan.io/review/${webpSrcSet(data.img[0])}`}
-              type="image/webp"
-            />
-            <Img src={data.local ? `${data.img[0]}` : `https://i.balaan.io/review/${data.img[0]}`} alt="reviewImg" />
+        {data?.map((data) => (
+          <Picture key={uuidv4()} onClick={() => handleClickDetail(data.id)}>
+            <source srcSet={`https://i.balaan.io/review/${webpSrcSet(data.img[0])}`} type="image/webp" />
+            <Img src={`https://i.balaan.io/review/${data.img[0]}`} alt="reviewImg" />
           </Picture>
         ))}
       </GridItems>
     </Wrap>
   );
+};
+
+Grid.propTypes = {
+  handleClickDetail: PropTypes.func,
+};
+
+Grid.defaultProps = {
+  handleClickDetail: null,
 };
 
 export default Grid;
