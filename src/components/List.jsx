@@ -2,6 +2,7 @@ import React from 'react';
 import ListItem from './ListItem';
 import { v4 as uuidv4 } from 'uuid';
 import useLocalStorage from '../hooks/useLocalStorage';
+import PropTypes from 'prop-types';
 
 const List = ({ data, setShareModal, setCopyId }) => {
   const [wishData, setWishData] = useLocalStorage('wish', []);
@@ -19,6 +20,16 @@ const List = ({ data, setShareModal, setCopyId }) => {
       ))}
     </section>
   );
+};
+
+List.propTypes = {
+  data: PropTypes.array,
+  setShareModal: PropTypes.func,
+  setCopyId: PropTypes.func,
+};
+
+List.defaultProps = {
+  data: [],
 };
 
 export default List;

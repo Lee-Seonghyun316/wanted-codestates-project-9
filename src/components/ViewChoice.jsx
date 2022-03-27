@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const ViewChoice = ({ viewType, handleClickViewType }) => (
   <Wrap>
@@ -11,6 +12,15 @@ const ViewChoice = ({ viewType, handleClickViewType }) => (
     </ChoiceButton>
   </Wrap>
 );
+
+ViewChoice.propTypes = {
+  viewType: PropTypes.string,
+  handleClickViewType: PropTypes.func,
+};
+
+ViewChoice.defaultProps = {
+  viewType: '',
+};
 
 export default ViewChoice;
 

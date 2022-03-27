@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import styled, { css } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
+import PropTypes from 'prop-types';
 
 const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishData }) => {
   const renderStar = (point) => {
@@ -48,6 +49,7 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishData }) =
     if (src.includes('.png')) {
       return src.replace('.png', '.webp');
     }
+    return src;
   };
 
   return (
@@ -91,6 +93,19 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishData }) =
       </Delivery>
     </div>
   );
+};
+
+ListItem.propTypes = {
+  review: PropTypes.object,
+  setShareModal: PropTypes.func,
+  setCopyId: PropTypes.func,
+  setWishData: PropTypes.func,
+  wishData: PropTypes.array,
+};
+
+ListItem.defaultProps = {
+  review: {},
+  wishData: null,
 };
 
 export default ListItem;

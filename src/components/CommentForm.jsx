@@ -1,13 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const CommentForm = ({ newComment, placeholder, depth, fixedInput, fixComment }) => {
   const [input, setInput] = useState('');
   const inputRef = useRef(null);
-  useEffect(() => {
-    fixedInput && setInput(fixedInput);
-    fixedInput && inputRef.current.focus();
-  }, [fixedInput]);
   const handleChange = (e) => {
     setInput(e.target.value);
   };
@@ -15,6 +12,10 @@ const CommentForm = ({ newComment, placeholder, depth, fixedInput, fixComment })
     fixComment ? fixComment(e, depth, input) : newComment(e, depth, input);
     setInput('');
   };
+  useEffect(() => {
+    fixedInput && setInput(fixedInput);
+    fixedInput && inputRef.current.focus();
+  }, [fixedInput]);
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -22,6 +23,21 @@ const CommentForm = ({ newComment, placeholder, depth, fixedInput, fixComment })
       <Posting>게시</Posting>
     </Form>
   );
+};
+
+CommentForm.propTypes = {
+  newComment: PropTypes.func,
+  placeholder: PropTypes.string,
+  depth: PropTypes.number,
+  fixedInput: PropTypes.string,
+  fixComment: PropTypes.func,
+};
+
+CommentForm.defaultProps = {
+  placeholder: '',
+  depth: 0,
+  fixedInput: '',
+  fixComment: null,
 };
 
 export default CommentForm;

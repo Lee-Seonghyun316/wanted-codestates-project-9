@@ -32,7 +32,7 @@ const ReviewList = () => {
     (state) => ({ page: state.reviews.page, reviews: state.reviews.data }),
     shallowEqual
   );
-  const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReviewsQuery({
+  const { data, isFetching, isLoading } = useGetReviewsQuery({
     page: page,
     sort: sort === 'random' ? 'recent' : sort,
   });
@@ -45,11 +45,6 @@ const ReviewList = () => {
     setTimeout(() => {
       setLoading(false);
     }, 1500);
-  };
-  const onIntersect = async ([entry], observer) => {
-    if (entry.isIntersecting) {
-      await dispatch(incrementPage());
-    }
   };
   const handleClickViewType = (e) => {
     const value = e.currentTarget.id;
@@ -105,6 +100,11 @@ const ReviewList = () => {
     };
   }, []);
   useEffect(() => {
+    const onIntersect = async ([entry], observer) => {
+      if (entry.isIntersecting) {
+        await dispatch(incrementPage());
+      }
+    };
     let observer;
     if (target) {
       observer = new IntersectionObserver(onIntersect, {
@@ -113,12 +113,12 @@ const ReviewList = () => {
       observer.observe(target);
     }
     return () => observer && observer.disconnect();
-  }, [target]);
+  }, [target, dispatch]);
   useEffect(() => {
     if (data) {
       sort === 'random' ? dispatch(addRandomData(data.data)) : dispatch(addData(data.data));
     }
-  }, [data]);
+  }, [data, dispatch, sort]);
   useEffect(() => {
     if (isLoading) {
       loadingHandling();
@@ -144,7 +144,7 @@ const ReviewList = () => {
           <Tags>
             {searchTagName(sort)}
             <Tag>전체</Tag>
-            <Refresh onClick={deleteTag}>
+            <Refresh>
               <FontAwesomeIcon icon={faArrowRotateRight} />
             </Refresh>
           </Tags>

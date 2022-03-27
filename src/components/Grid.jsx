@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
+import PropTypes from 'prop-types';
 
 const Grid = ({ handleClickDetail, data }) => {
   const webpSrcSet = (src) => {
@@ -13,6 +14,7 @@ const Grid = ({ handleClickDetail, data }) => {
     if (src.includes('.png')) {
       return src.replace('.png', '.webp');
     }
+    return src;
   };
   return (
     <Wrap>
@@ -29,6 +31,16 @@ const Grid = ({ handleClickDetail, data }) => {
       </GridItems>
     </Wrap>
   );
+};
+
+Grid.propTypes = {
+  handleClickDetail: PropTypes.func,
+  data: PropTypes.array,
+};
+
+Grid.defaultProps = {
+  handleClickDetail: null,
+  data: [],
 };
 
 export default Grid;

@@ -12,12 +12,17 @@ import { addQueryData, deleteQueryData, incrementQueryPage, queryPageInitialize 
 import { useStopScroll } from '../hooks/useStopScroll';
 import SubHeader from '../components/SubHeader';
 import useLocalStorage from '../hooks/useLocalStorage';
+import PropTypes from 'prop-types';
+import Filter from '../components/Filter';
 
 const ReviewDetail = ({ index, setCurrent, currentSort = 'recent', wish = false }) => {
   const [copyId, setCopyId] = useState();
+  const [target, setTarget] = useState(null);
+  const [shareModal, setShareModal] = useState(false);
   const [params] = useSearchParams();
   const reviewId = params.get('review-id');
-  const sort = params.get('sort');
+  const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
+  const [wishData, setWishData] = useLocalStorage('wish', []);
   const { queryPage, queryData, reviews } = useSelector(
     (state) => ({
       queryPage: state.reviews.queryPage,
@@ -26,39 +31,15 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent', wish = false 
     }),
     shallowEqual
   );
-  const [localReviews, setLocalReviews] = useLocalStorage('localReviews', []);
-  const [wishData, setWishData] = useLocalStorage('wish', []);
   const ClientData =
     reviews && localReviews?.length > 0 ? localReviews.map((review) => review.data).concat(reviews) : reviews;
-  const { data, error, isSuccess, isError, isFetching, isLoading } = useGetCertainReviewsQuery({
+  const { data, isFetching } = useGetCertainReviewsQuery({
     page: queryPage,
     reviewId: reviewId,
-    sort: sort,
+    sort: params.get('sort') || currentSort,
   });
   const slicedReviews = wish ? wishData.slice(index) : queryData.length > 0 ? queryData : ClientData.slice(index);
-  const [shareModal, setShareModal] = useState(false);
-  const [target, setTarget] = useState(null);
-  useEffect(() => {
-    let observer;
-    if (target) {
-      observer = new IntersectionObserver(onIntersect, {
-        threshold: 0.2,
-      });
-      observer.observe(target);
-    }
-    return () => observer && observer.disconnect();
-  }, [target]);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (data) {
-      dispatch(addQueryData(data.data));
-    }
-  }, [data]);
-  const onIntersect = async ([entry], observer) => {
-    if (entry.isIntersecting) {
-      await dispatch(incrementQueryPage());
-    }
-  };
   const navigate = useNavigate();
   const handleClickBack = async () => {
     if (!wish && setCurrent) {
@@ -70,6 +51,26 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent', wish = false 
     navigate('/');
   };
   useStopScroll(shareModal);
+  useEffect(() => {
+    if (data) {
+      dispatch(addQueryData(data.data));
+    }
+  }, [data, dispatch]);
+  useEffect(() => {
+    const onIntersect = async ([entry], observer) => {
+      if (entry.isIntersecting) {
+        await dispatch(incrementQueryPage());
+      }
+    };
+    let observer;
+    if (target) {
+      observer = new IntersectionObserver(onIntersect, {
+        threshold: 0.2,
+      });
+      observer.observe(target);
+    }
+    return () => observer && observer.disconnect();
+  }, [target, dispatch]);
 
   return (
     <React.Fragment>
@@ -96,6 +97,19 @@ const ReviewDetail = ({ index, setCurrent, currentSort = 'recent', wish = false 
       {shareModal && <ShareModal setShareModal={setShareModal} reviewId={copyId} sort={currentSort} />}
     </React.Fragment>
   );
+};
+
+Filter.propTypes = {
+  index: PropTypes.number,
+  setCurrent: PropTypes.func,
+  currentSort: PropTypes.string,
+  wish: PropTypes.bool,
+};
+
+Filter.defaultProps = {
+  index: null,
+  currentSort: 'recent',
+  wish: false,
 };
 
 export default ReviewDetail;

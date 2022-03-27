@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useGetReplyQuery } from '../redux/fetchReply';
 import { v4 as uuidv4 } from 'uuid';
 import CommentForm from './CommentForm';
+import PropTypes from 'prop-types';
 
 const NICKNAME = 'FEDeveloper';
 
@@ -10,7 +11,7 @@ const Comments = ({ id }) => {
   const [comments, setComments] = useState([]);
   const [currentIndex, setDeepIndex] = useState(null);
   const [fixed, setFixed] = useState(false);
-  const { data, error, isSuccess, isError, isFetching, isLoading } = useGetReplyQuery(id);
+  const { data } = useGetReplyQuery(id);
   const makeTimeGap = (startTime) => {
     const milliSeconds = Date.now() - startTime;
     const minutes = milliSeconds / 60000;
@@ -136,7 +137,7 @@ const Comments = ({ id }) => {
               newComment={newComment}
               placeholder={fixed ? '' : `${NICKNAME} (으)로 답글`}
               depth={reply.depth + 1}
-              fixedInput={fixed ? comments[index].contents : null}
+              fixedInput={fixed ? comments[index].contents : ''}
               fixComment={fixed ? fixComment : null}
             />
           )}
@@ -145,6 +146,14 @@ const Comments = ({ id }) => {
       {currentIndex === null && <CommentForm newComment={newComment} placeholder="댓글 달기" depth={0} />}
     </Wrap>
   );
+};
+
+Comments.propTypes = {
+  id: PropTypes.number,
+};
+
+Comments.defaultProps = {
+  id: null,
 };
 
 export default Comments;

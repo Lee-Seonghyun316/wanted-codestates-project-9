@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const SubHeader = ({ onClick, title }) => (
   <Head>
@@ -12,6 +13,15 @@ const SubHeader = ({ onClick, title }) => (
     </Button>
   </Head>
 );
+
+SubHeader.propTypes = {
+  onClick: PropTypes.func,
+  title: PropTypes.string,
+};
+
+SubHeader.defaultProps = {
+  title: '',
+};
 
 export default SubHeader;
 
