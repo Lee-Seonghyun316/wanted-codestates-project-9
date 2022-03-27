@@ -21,8 +21,13 @@ const Grid = ({ handleClickDetail, data }) => {
       <GridItems>
         {data?.map((data) => (
           <Picture key={uuidv4()} onClick={() => handleClickDetail(data.id)}>
-            <source srcSet={`https://i.balaan.io/review/${webpSrcSet(data.img[0])}`} type="image/webp" />
-            <Img src={`https://i.balaan.io/review/${data.img[0]}`} alt="reviewImg" />
+            <source
+              srcSet={
+                data?.local ? `${webpSrcSet(data?.img[0])}` : `https://i.balaan.io/review/${webpSrcSet(data.img[0])}`
+              }
+              type="image/webp"
+            />
+            <Img src={data?.local ? `${data.img[0]}` : `https://i.balaan.io/review/${data.img[0]}`} alt="reviewImg" />
           </Picture>
         ))}
       </GridItems>

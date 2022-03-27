@@ -35,7 +35,10 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishDataIds }
     }
     setWishData((wishData) => wishData.concat([review]));
   };
-  const handleClickShare = (id) => {
+  const handleClickShare = (id, local) => {
+    if (local) {
+      return;
+    }
     setShareModal(true);
     setCopyId(id);
   };
@@ -62,8 +65,13 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishDataIds }
         </ActivitySet>
       </Activities>
       <picture key={uuidv4()}>
-        <source srcSet={`https://i.balaan.io/review/${webpSrcSet(review.img[0])}`} type="image/webp" />
-        <Img src={`https://i.balaan.io/review/${review.img[0]}`} alt="reviewImg" />
+        <source
+          srcSet={
+            review?.local ? `${webpSrcSet(review.img[0])}` : `https://i.balaan.io/review/${webpSrcSet(review.img[0])}`
+          }
+          type="image/webp"
+        />
+        <Img src={review?.local ? `${review.img[0]}` : `https://i.balaan.io/review/${review.img[0]}`} alt="reviewImg" />
       </picture>
       <Activities>
         <ActivitySet>
@@ -72,7 +80,7 @@ const ListItem = ({ review, setShareModal, setCopyId, setWishData, wishDataIds }
           </Expression>
           <Activity
             src="https://static.balaan.co.kr/mobile/img/view/share.png?v=2"
-            onClick={() => handleClickShare(review.id)}
+            onClick={() => handleClickShare(review.id, review.local)}
           />
         </ActivitySet>
         <Expression like={wishDataIds.includes(review.id)}>

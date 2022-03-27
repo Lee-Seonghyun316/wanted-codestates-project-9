@@ -3,10 +3,9 @@ import styled from 'styled-components';
 import SubHeader from '../components/SubHeader';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
-import useSessionStorage from '../hooks/useSessionStorage';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { deleteData } from '../redux/reviews';
+import { addData, deleteData } from '../redux/reviews';
 import { useDispatch } from 'react-redux';
 import ReactLoading from 'react-loading';
 
@@ -25,7 +24,6 @@ const ReviewRegister = () => {
   const [stars, setStars] = useState([false, false, false, false, false]);
   const [loading, setLoading] = useState(false);
   const [registerText, setRegisterText] = useState('등록하기');
-  const [localReviews, setLocalReviews] = useSessionStorage('localReviews', []);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleChange = (e) => {
@@ -35,7 +33,7 @@ const ReviewRegister = () => {
       [id]: value,
     });
   };
-  const handleClickRegister = (e) => {
+  const handleClickRegister = async (e) => {
     e.preventDefault();
     if (title && content.length > 9 && files.length > 0) {
       const formData = new FormData();
@@ -52,24 +50,20 @@ const ReviewRegister = () => {
           'content-type': 'multipart/form-data',
         },
       };
-      const Data = {
-        header: config,
-        data: {
-          //임시 데이터
-          id: 165186,
-          opt: '사이즈 / 37',
-          regdt: '2022-03-24 17:46:27',
-          reviewSize: [{ title: '사이즈는 어떤가요?', txt: '정사이즈에요' }],
-          img: files.map((file) => file.src),
-          //폼 입력 데이터
-          nickname: NICKNAME,
-          title: title,
-          contents: content,
-          point: countStar,
-          formData: formData,
-        },
+      const newData = {
+        id: 165186,
+        opt: '사이즈 / 37',
+        regdt: '2022-03-24 17:46:27',
+        reviewSize: [{ title: '사이즈는 어떤가요?', txt: '정사이즈에요' }],
+        img: files.map((file) => file.src),
+        nickname: NICKNAME,
+        title: title,
+        contents: content,
+        point: countStar,
+        local: true,
       };
-      setLocalReviews([Data, ...localReviews]);
+      await dispatch(deleteData());
+      await dispatch(addData([newData]));
       setLoading(true);
       setTimeout(() => {
         setLoading(false);
@@ -113,7 +107,6 @@ const ReviewRegister = () => {
     setStars(newStars);
   };
   const handleClickList = async () => {
-    await dispatch(deleteData());
     navigate('/');
   };
   const fileCheck = (fileName) => {
