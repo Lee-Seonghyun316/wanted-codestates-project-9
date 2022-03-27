@@ -4,7 +4,7 @@ https://wanted-codestates-project-9-kappa.vercel.app/
 pc로 접속하는 경우, chrome 브라우저에서 f12 로 개발자도구를 열고, 모바일화면으로(ex: IPhone12pro 390*844) 확인합니다. 
 
 ## Description
-고객이 리뷰를 등록 하고 리뷰를 확인할 수 있는 기능을 구현합니다.
+모바일 반응형으로 고객이 리뷰를 등록 하고 리뷰를 확인할 수 있는 웹페이지를 구현합니다.
 
 ## Usage(자세한 실행 방법)
 
